@@ -3,16 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>La Última Ubicación - Caso Policial</title>
+<title>Archivo del Caso Nº 001</title>
 <style>
-body { font-family:"Courier New",Courier,monospace; background:#121212; color:#e0e0e0; margin:0; padding:0; }
-header { background:#1e1e1e; color:#fff; padding:20px; text-align:center; border-bottom:4px solid #444; }
-h1,h2,h3 { margin:10px 0; }
-main { max-width:900px; margin:20px auto; padding:20px; background:#1c1c1c; border:2px solid #444; box-shadow:3px 3px 10px rgba(0,0,0,0.5); }
-.section { margin-bottom:25px; padding:15px; border:1px dashed #666; background:#262626; }
-.personaje { margin-bottom:20px; padding:10px; border:1px solid #555; background:#2a2a2a; }
-.personaje h3 { margin-top:0; color:#ffcc00; }
-.btn-folder, .btn { background:#444; color:#fff; padding:12px 20px; border:none; border-radius:4px; cursor:pointer; margin-top:10px; display:inline-block; text-align:center; transition:0.3s; font-size:16px; }
+body {
+  font-family:"Courier New",Courier,monospace;
+  background:#121212;
+  color:#e0e0e0;
+  margin:0;
+  padding:0;
+}
+header {
+  background:#1e1e1e;
+  color:#fff;
+  padding:20px;
+  text-align:center;
+  border-bottom:4px solid #444;
+}
+h1 { margin:0; font-size:2.5em; }
+h2 { margin:5px 0 20px 0; font-size:1.5em; color:#ccc; font-weight:normal; }
+h3 { margin:10px 0; }
+main {
+  max-width:900px;
+  margin:20px auto;
+  padding:20px;
+  background:#1c1c1c;
+  border:2px solid #444;
+  box-shadow:3px 3px 10px rgba(0,0,0,0.5);
+}
+.section {
+  margin-bottom:25px;
+  padding:15px;
+  border:1px dashed #666;
+  background:#262626;
+}
+.personaje {
+  margin-bottom:20px;
+  padding:10px;
+  border:1px solid #555;
+  background:#2a2a2a;
+}
+.personaje h3 { color:#ffcc00; margin-top:0; }
+.btn-folder, .btn {
+  background:#444;
+  color:#fff;
+  padding:12px 20px;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+  margin-top:10px;
+  display:inline-block;
+  text-align:center;
+  transition:0.3s;
+  font-size:16px;
+}
 .btn-folder:hover, .btn:hover { background:#ffcc00; color:#000; }
 .button-container { text-align:center; margin-top:30px; }
 
@@ -31,6 +74,7 @@ main { max-width:900px; margin:20px auto; padding:20px; background:#1c1c1c; bord
 </header>
 
 <main>
+
 <div class="section">
 <h2>Descripción del Caso</h2>
 <p>Lucía Herrera, estudiante universitaria de 22 años, desaparece misteriosamente tras salir de su departamento. Mensajes crípticos, pistas contradictorias y relaciones ambiguas complican la investigación. Las detectives Malena y Victoria deberán reconstruir sus últimos pasos y descubrir la verdad.</p>
@@ -57,11 +101,24 @@ main { max-width:900px; margin:20px auto; padding:20px; background:#1c1c1c; bord
 <button class="btn-folder" onclick="window.location.href='carpeta-mariana.html'">Abrir carpeta de Mariana</button>
 </div>
 
+<div class="personaje">
+<h3>Álvaro Montes (exnovio)</h3>
+<p>Edad: 23 años | Personalidad complicada | Última interacción conflictiva</p>
+<button class="btn-folder" onclick="alert('Carpeta extendida de Álvaro aún no disponible')">Abrir carpeta de Álvaro</button>
+</div>
+
+<div class="personaje">
+<h3>Daniel Ríos (profesor)</h3>
+<p>Edad: 35 años | Relación académica | Podría tener información relevante</p>
+<button class="btn-folder" onclick="alert('Carpeta extendida de Daniel aún no disponible')">Abrir carpeta de Daniel</button>
+</div>
+
 </div>
 
 <div class="button-container">
 <button class="btn" onclick="window.location.href='sala-interrogatorio.html'">Ir a la sala de interrogatorio</button>
 </div>
+
 </main>
 
 </body>
