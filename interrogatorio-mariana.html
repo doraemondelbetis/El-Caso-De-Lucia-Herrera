@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interrogatorio - Mariana Cruz</title>
+<style>
+body { font-family:"Courier New",Courier,monospace; background:#121212; color:#e0e0e0; margin:0; padding:0;}
+header { background:#1e1e1e; color:#fff; padding:20px; text-align:center; border-bottom:4px solid #444; }
+h1 { margin:0; font-size:2.5em; }
+h2 { margin:5px 0 20px 0; font-size:1.5em; color:#ccc; font-weight:normal; }
+main { max-width:900px; margin:20px auto; padding:20px; background:#1c1c1c; border:2px solid #444; box-shadow:3px 3px 10px rgba(0,0,0,0.5); }
+.button-container { text-align:center; margin-top:20px; }
+.btn, .btn-question { background:#444; color:#fff; padding:12px 20px; border:none; border-radius:4px; cursor:pointer; margin:5px 5px 0 0; transition:0.3s; font-size:16px; }
+.btn:hover, .btn-question:hover { background:#ffcc00; color:#000; }
+.info-box { margin-top:20px; padding:15px; background:#262626; border:1px solid #555; min-height:150px; }
+@media(max-width:600px){ .btn, .btn-question { width:100%; font-size:18px; margin-top:12px;} }
+</style>
+</head>
+<body>
+
+<header>
+<h1>Interrogatorio: Mariana Cruz</h1>
+<h2>Interactúa y selecciona tus preguntas</h2>
+</header>
+
+<main>
+<div class="info-box" id="info">
+<p>Selecciona una pregunta para empezar el interrogatorio.</p>
+</div>
+
+<div class="button-container" id="botones"></div>
+
+<div class="button-container">
+<button class="btn" onclick="reiniciar()">Reiniciar Interrogatorio</button>
+<a class="btn" href="sala-interrogatorio.html">Volver a la Sala de Interrogatorio</a>
+</div>
+
+<script>
+let nivel = 1;
+let estado = 'normal';
+let preguntasUsadas = [];
+const preguntas = {
+  1: [
+    {texto:'Dónde estabas la noche de la desaparición?', respuesta:'Estaba en casa, preparando unos apuntes para la universidad.', delicada:false},
+    {texto:'Cómo describirías tu relación con Lucía?', respuesta:'Somos mejores amigas desde hace años, compartíamos todo.', delicada:false},
+    {texto:'Notaste algo extraño en ella últimamente?', respuesta:'Sí, estaba un poco ansiosa y distraída.', delicada:false}
+  ],
+  2: [
+    {texto:'Lucía te dijo algo que la preocupara?', respuesta:'No quiero hablar de eso.', delicada:true},
+    {texto:'Viste a alguien fuera de lo normal?', respuesta:'Un vecino parecía muy nervioso esos días.', delicada:false},
+    {texto:'Qué hacías el día anterior a su desaparición?', respuesta:'Salí a estudiar y luego nos escribimos un mensaje rápido.', delicada:false}
+  ],
+  3: [
+    {texto:'Sabías de problemas con su familia?', respuesta:'Nada grave, solo discusiones pequeñas.', delicada:false},
+    {texto:'Alguien le hacía sentir miedo?', respuesta:'No quiero contestar eso.', delicada:true},
+    {texto:'Qué planes tenía para el fin de semana?', respuesta:'Iba a estudiar y luego descansar un poco.', delicada:false}
+  ],
+  4: [
+    {texto:'Qué opinas de Álvaro?', respuesta:'Era su ex, a veces se comportaba mal pero no parecía peligroso.', delicada:false},
+    {texto:'Lucía mencionó algún secreto?', respuesta:'Sí, pero no puedo decirte.', delicada:true},
+    {texto:'Notaste cambios en su comportamiento?', respuesta:'Sí, estaba más inquieta y nerviosa.', delicada:false}
+  ],
+  5: [
+    {texto:'Alguien visitó su casa?', respuesta:'No que yo supiera.', delicada:false},
+    {texto:'Problemas con la universidad?', respuesta:'Solo estaba preocupada por unas tareas, nada más.', delicada:false},
+    {texto:'Mensajes extraños que recibiera?', respuesta:'Recibió uno que la puso nerviosa, pero no dijo de quién.', delicada:false}
+  ],
+  6: [
+    {texto:'Vió a alguien sospechoso?', respuesta:'Sí, un chico rondando cerca de su edificio.', delicada:false},
+    {texto:'Sabías si tenía enemigos?', respuesta:'No quiero contestar eso.', delicada:true},
+    {texto:'Última conversación con ella?', respuesta:'Hablamos de cosas normales, nada preocupante.', delicada:false}
+  ],
+  7: [
+    {texto:'Lucía tenía miedo de algo?', respuesta:'Sí, algo la inquietaba, pero no sabía qué.', delicada:false},
+    {texto:'Notas cambios en su rutina?', respuesta:'Sí, empezó a salir menos y a estudiar más.', delicada:false},
+    {texto:'Algún secreto que quieras revelar?', respuesta:'No quiero revelar eso.', delicada:true}
+  ],
+  8: [
+    {texto:'Conflictos familiares recientes?', respuesta:'Solo discusiones menores entre hermanos.', delicada:false},
+    {texto:'Alguien más sabía de sus planes?', respuesta:'Quizá Tomás, pero no estoy segura.', delicada:false},
+    {texto:'Algo que te pareció sospechoso?', respuesta:'No quiero contestar eso.', delicada:true}
+  ],
+  9: [
+    {texto:'Última vez que la viste feliz?', respuesta:'El día antes de su desaparición estaba tranquila.', delicada:false},
+    {texto:'Alguien te pidió que no contaras algo?', respuesta:'Sí, pero no puedo decirte quién.', delicada:true},
+    {texto:'Vió movimientos extraños cerca de su casa?', respuesta:'Sí, un coche pasó varias veces.', delicada:false}
+  ],
+  10: [
+    {texto:'Algo que no hemos preguntado?', respuesta:'No, eso es todo lo que sé.', delicada:false},
+    {texto:'Pensaste que algo malo pasaría?', respuesta:'No quiero responder eso.', delicada:true},
+    {texto:'Último momento que la viste?', respuesta:'Hablamos por mensaje antes de dormir.', delicada:false}
+  ]
+};
+
+function mostrarBotones() {
+  const cont = document.getElementById('botones');
+  cont.innerHTML = '';
+  preguntas[nivel].forEach((p, idx) => {
+    let textoBtn = p.texto;
+    if(estado==='indignado' && preguntasUsadas.includes(idx)) textoBtn += ' (Respuesta breve)';
+    cont.innerHTML += `<button class="btn-question" onclick="hacerPregunta(${idx})">${textoBtn}</button>`;
+  });
+}
+
+function hacerPregunta(idx) {
+  const p = preguntas[nivel][idx];
+  const info = document.getElementById('info');
+
+  if(p.delicada){
+    if(Math.random()<0.5){ 
+      estado='indignado'; 
+      info.innerHTML=`<p>Mariana se indigna y responde de manera breve o evasiva: "No quiero contestar eso".</p>`; 
+      preguntasUsadas.push(idx); 
+      mostrarBotones(); 
+      return;
+    }
+    else{
+      info.innerHTML=`<p>Mariana responde: "No quiero contestar eso".</p>`; 
+      mostrarBotones(); 
+      return;
+    }
+  }
+
+  let respuesta = p.respuesta;
+  if(estado==='indignado') respuesta='(Respuesta breve por indignación) ' + respuesta;
+  info.innerHTML=`<p>${respuesta}</p>`;
+  preguntasUsadas.push(idx);
+
+  if(nivel<10) nivel++;
+  mostrarBotones();
+}
+
+function reiniciar() { 
+  nivel=1; 
+  estado='normal'; 
+  preguntasUsadas=[]; 
+  document.getElementById('info').innerHTML='<p>Selecciona una pregunta para empezar el interrogatorio.</p>'; 
+  mostrarBotones(); 
+}
+
+mostrarBotones();
+</script>
+
+</main>
+</body>
+</html>

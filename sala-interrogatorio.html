@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sala de Interrogatorio</title>
+<style>
+body { font-family:"Courier New",Courier,monospace; background:#121212; color:#e0e0e0; margin:0; padding:0;}
+header { background:#1e1e1e; color:#fff; padding:20px; text-align:center; border-bottom:4px solid #444; }
+h1 { margin:0; font-size:2.5em; }
+h2 { margin:5px 0 20px 0; font-size:1.5em; color:#ccc; font-weight:normal; }
+main { max-width:900px; margin:20px auto; padding:20px; background:#1c1c1c; border:2px solid #444; box-shadow:3px 3px 10px rgba(0,0,0,0.5);}
+.button-container { text-align:center; margin-top:30px; }
+.btn { background:#444; color:#fff; padding:15px 25px; border:none; border-radius:4px; cursor:pointer; margin:10px; font-size:18px; transition:0.3s;}
+.btn:hover { background:#ffcc00; color:#000;}
+.info-box { margin-top:20px; padding:15px; background:#262626; border:1px solid #555; min-height:120px; }
+@media(max-width:600px){ .btn { width:100%; font-size:20px; margin-top:12px;} }
+</style>
+</head>
+<body>
+
+<header>
+<h1>Sala de Interrogatorio</h1>
+<h2>Selecciona un personaje para interrogar</h2>
+</header>
+
+<main>
+<div class="info-box">
+<p>Bienvenido a la sala de interrogatorio. Aquí puedes elegir a un personaje para comenzar su interrogatorio independiente. Recuerda: cada personaje tiene información única y preguntas delicadas que pueden enfadarlo.</p>
+</div>
+
+<div class="button-container">
+<button class="btn" onclick="window.location.href='interrogatorio-tomas.html'">Tomás Herrera</button>
+<button class="btn" onclick="window.location.href='interrogatorio-mariana.html'">Mariana Cruz</button>
+<button class="btn" onclick="window.location.href='interrogatorio-alvaro.html'">Álvaro Montes</button>
+<button class="btn" onclick="window.location.href='interrogatorio-daniel.html'">Daniel Ríos</button>
+</div>
+
+<div class="button-container">
+<a class="btn" href="index.html">Volver al Archivo del Caso</a>
+</div>
+
+</main>
+</body>
+</html>
