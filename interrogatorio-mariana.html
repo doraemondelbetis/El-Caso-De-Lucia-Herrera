@@ -14,6 +14,7 @@ main { max-width:900px; margin:20px auto; padding:20px; background:#1c1c1c; bord
 .btn, .btn-question { background:#444; color:#fff; padding:12px 20px; border:none; border-radius:4px; cursor:pointer; margin:5px 5px 0 0; transition:0.3s; font-size:16px; }
 .btn:hover, .btn-question:hover { background:#ffcc00; color:#000; }
 .info-box { margin-top:20px; padding:15px; background:#262626; border:1px solid #555; min-height:150px; }
+.warning { color:#ff4444; font-weight:bold; margin-bottom:10px; }
 @media(max-width:600px){ .btn, .btn-question { width:100%; font-size:18px; margin-top:12px;} }
 </style>
 </head>
@@ -31,65 +32,66 @@ main { max-width:900px; margin:20px auto; padding:20px; background:#1c1c1c; bord
 
 <div class="button-container" id="botones"></div>
 
-<div class="button-container">
-<button class="btn" onclick="reiniciar()">Reiniciar Interrogatorio</button>
-<a class="btn" href="sala-interrogatorio.html">Volver a la Sala de Interrogatorio</a>
+<div class="button-container" id="botones-final">
+  <button class="btn" onclick="reiniciar()">Reiniciar Interrogatorio</button>
+  <a class="btn" href="sala-interrogatorio.html">Volver a la Sala de Interrogatorio</a>
 </div>
 
 <script>
 let nivel = 1;
 let estado = 'normal';
 let preguntasUsadas = [];
+
 const preguntas = {
   1: [
-    {texto:'Dónde estabas la noche de la desaparición?', respuesta:'Estaba en casa, preparando unos apuntes para la universidad.', delicada:false},
-    {texto:'Cómo describirías tu relación con Lucía?', respuesta:'Somos mejores amigas desde hace años, compartíamos todo.', delicada:false},
-    {texto:'Notaste algo extraño en ella últimamente?', respuesta:'Sí, estaba un poco ansiosa y distraída.', delicada:false}
+    {texto:'Qué relación tienes con Lucía?', respuesta:'Somos mejores amigas desde hace años. La conozco muy bien.', delicada:false},
+    {texto:'Notas algo extraño en Lucía últimamente?', respuesta:'Sí, estaba más nerviosa y reservada.', delicada:false},
+    {texto:'Alguien más te preocupa que esté cerca de Lucía?', respuesta:'No quiero contestar eso.', delicada:true}
   ],
   2: [
-    {texto:'Lucía te dijo algo que la preocupara?', respuesta:'No quiero hablar de eso.', delicada:true},
-    {texto:'Viste a alguien fuera de lo normal?', respuesta:'Un vecino parecía muy nervioso esos días.', delicada:false},
-    {texto:'Qué hacías el día anterior a su desaparición?', respuesta:'Salí a estudiar y luego nos escribimos un mensaje rápido.', delicada:false}
+    {texto:'Qué hacían juntas últimamente?', respuesta:'Estudiábamos y salíamos a veces, nada extraño.', delicada:false},
+    {texto:'Algún conflicto con amigos?', respuesta:'No, solo pequeñas discusiones.', delicada:false},
+    {texto:'Sabes si alguien la amenazó?', respuesta:'No quiero contestar eso.', delicada:true}
   ],
   3: [
-    {texto:'Sabías de problemas con su familia?', respuesta:'Nada grave, solo discusiones pequeñas.', delicada:false},
-    {texto:'Alguien le hacía sentir miedo?', respuesta:'No quiero contestar eso.', delicada:true},
-    {texto:'Qué planes tenía para el fin de semana?', respuesta:'Iba a estudiar y luego descansar un poco.', delicada:false}
+    {texto:'Cambios en su comportamiento?', respuesta:'Sí, estaba más ansiosa y distraída.', delicada:false},
+    {texto:'Últimos mensajes con alguien importante?', respuesta:'No quiero contestar eso.', delicada:true},
+    {texto:'Último día antes de la desaparición?', respuesta:'Me llamó para hablar de cosas importantes.', delicada:false}
   ],
   4: [
-    {texto:'Qué opinas de Álvaro?', respuesta:'Era su ex, a veces se comportaba mal pero no parecía peligroso.', delicada:false},
-    {texto:'Lucía mencionó algún secreto?', respuesta:'Sí, pero no puedo decirte.', delicada:true},
-    {texto:'Notaste cambios en su comportamiento?', respuesta:'Sí, estaba más inquieta y nerviosa.', delicada:false}
+    {texto:'Algo que pueda ayudar a entender su desaparición?', respuesta:'Sí, algo extraño estaba pasando.', delicada:false},
+    {texto:'Alguien la manipulaba?', respuesta:'No quiero contestar eso.', delicada:true},
+    {texto:'Su estado emocional final?', respuesta:'Estaba preocupada y confiaba en mí.', delicada:false}
   ],
   5: [
-    {texto:'Alguien visitó su casa?', respuesta:'No que yo supiera.', delicada:false},
-    {texto:'Problemas con la universidad?', respuesta:'Solo estaba preocupada por unas tareas, nada más.', delicada:false},
-    {texto:'Mensajes extraños que recibiera?', respuesta:'Recibió uno que la puso nerviosa, pero no dijo de quién.', delicada:false}
+    {texto:'Qué opinas del chico misterioso con quien hablaba?', respuesta:'No quiero contestar eso.', delicada:true},
+    {texto:'Algún detalle sobre su vida familiar?', respuesta:'Todo normal, su hermano la protege mucho.', delicada:false},
+    {texto:'Algo que nos pueda llevar a pistas?', respuesta:'Revisen sus mensajes, ahí está todo.', delicada:false}
   ],
   6: [
-    {texto:'Vió a alguien sospechoso?', respuesta:'Sí, un chico rondando cerca de su edificio.', delicada:false},
-    {texto:'Sabías si tenía enemigos?', respuesta:'No quiero contestar eso.', delicada:true},
-    {texto:'Última conversación con ella?', respuesta:'Hablamos de cosas normales, nada preocupante.', delicada:false}
+    {texto:'Viste algo sospechoso fuera de lo normal?', respuesta:'Noté que alguien la observaba días antes.', delicada:false},
+    {texto:'Alguien más sabía de sus planes?', respuesta:'No quiero contestar eso.', delicada:true},
+    {texto:'Algún cambio en su rutina?', respuesta:'Sí, empezó a salir más tarde de casa.', delicada:false}
   ],
   7: [
-    {texto:'Lucía tenía miedo de algo?', respuesta:'Sí, algo la inquietaba, pero no sabía qué.', delicada:false},
-    {texto:'Notas cambios en su rutina?', respuesta:'Sí, empezó a salir menos y a estudiar más.', delicada:false},
-    {texto:'Algún secreto que quieras revelar?', respuesta:'No quiero revelar eso.', delicada:true}
+    {texto:'Última conversación importante?', respuesta:'Hablamos sobre sus preocupaciones personales.', delicada:false},
+    {texto:'Notas alguien que pueda estar involucrado?', respuesta:'No quiero contestar eso.', delicada:true},
+    {texto:'Alguna pista en su habitación?', respuesta:'Encontré notas raras que no entendía.', delicada:false}
   ],
   8: [
-    {texto:'Conflictos familiares recientes?', respuesta:'Solo discusiones menores entre hermanos.', delicada:false},
-    {texto:'Alguien más sabía de sus planes?', respuesta:'Quizá Tomás, pero no estoy segura.', delicada:false},
-    {texto:'Algo que te pareció sospechoso?', respuesta:'No quiero contestar eso.', delicada:true}
+    {texto:'Sabes de algún plan que tuviera?', respuesta:'Sí, algo con alguien misterioso.', delicada:false},
+    {texto:'Alguien que podría ayudar a encontrarla?', respuesta:'No quiero contestar eso.', delicada:true},
+    {texto:'Algo que pueda indicar peligro?', respuesta:'Noté que recibía mensajes extraños.', delicada:false}
   ],
   9: [
-    {texto:'Última vez que la viste feliz?', respuesta:'El día antes de su desaparición estaba tranquila.', delicada:false},
-    {texto:'Alguien te pidió que no contaras algo?', respuesta:'Sí, pero no puedo decirte quién.', delicada:true},
-    {texto:'Vió movimientos extraños cerca de su casa?', respuesta:'Sí, un coche pasó varias veces.', delicada:false}
+    {texto:'Cambio de actitud con alguien?', respuesta:'Sí, con el chico misterioso se mostraba nerviosa.', delicada:false},
+    {texto:'Alguien que desconfiara de Lucía?', respuesta:'No quiero contestar eso.', delicada:true},
+    {texto:'Algo que nos lleve a su ubicación?', respuesta:'No puedo darlo directamente, revisen sus chats.', delicada:false}
   ],
   10: [
-    {texto:'Algo que no hemos preguntado?', respuesta:'No, eso es todo lo que sé.', delicada:false},
-    {texto:'Pensaste que algo malo pasaría?', respuesta:'No quiero responder eso.', delicada:true},
-    {texto:'Último momento que la viste?', respuesta:'Hablamos por mensaje antes de dormir.', delicada:false}
+    {texto:'Última advertencia que recibiste de ella?', respuesta:'Que no quería desaparecer, me lo dijo claramente.', delicada:false},
+    {texto:'Algo que te haya llamado la atención de manera extrema?', respuesta:'No quiero contestar eso.', delicada:true},
+    {texto:'Mensaje final antes de su desaparición?', respuesta:'Me pidió cuidar todo lo que sabía sobre ella.', delicada:false}
   ]
 };
 
@@ -98,6 +100,7 @@ function mostrarBotones() {
   cont.innerHTML = '';
   preguntas[nivel].forEach((p, idx) => {
     let textoBtn = p.texto;
+    if(p.delicada) textoBtn = '⚠️ ' + textoBtn; // advertencia
     if(estado==='indignado' && preguntasUsadas.includes(idx)) textoBtn += ' (Respuesta breve)';
     cont.innerHTML += `<button class="btn-question" onclick="hacerPregunta(${idx})">${textoBtn}</button>`;
   });
@@ -110,12 +113,11 @@ function hacerPregunta(idx) {
   if(p.delicada){
     if(Math.random()<0.5){ 
       estado='indignado'; 
-      info.innerHTML=`<p>Mariana se indigna y responde de manera breve o evasiva: "No quiero contestar eso".</p>`; 
+      info.innerHTML=`<p>Mariana se indigna y responde de manera breve: "No quiero contestar eso".</p>`; 
       preguntasUsadas.push(idx); 
       mostrarBotones(); 
       return;
-    }
-    else{
+    } else {
       info.innerHTML=`<p>Mariana responde: "No quiero contestar eso".</p>`; 
       mostrarBotones(); 
       return;
@@ -127,8 +129,38 @@ function hacerPregunta(idx) {
   info.innerHTML=`<p>${respuesta}</p>`;
   preguntasUsadas.push(idx);
 
-  if(nivel<10) nivel++;
-  mostrarBotones();
+  if(nivel<10) {
+    nivel++;
+    mostrarBotones();
+  } else {
+    // Al final del interrogatorio, mostrar botón de pedir chats
+    const contFinal = document.getElementById('botones-final');
+    const btnMensajes = document.createElement('button');
+    btnMensajes.className='btn';
+    btnMensajes.textContent='Pedir mensajes de WhatsApp de Lucía';
+    btnMensajes.onclick=desbloquearMensajes;
+    contFinal.insertBefore(btnMensajes, contFinal.firstChild);
+    document.getElementById('botones').innerHTML='';
+    info.innerHTML += '<p>Interrogatorio completado. Ahora puedes pedir los mensajes de WhatsApp.</p>';
+  }
+}
+
+function desbloquearMensajes(){
+  const info = document.getElementById('info');
+  let linkChat1 = '<a style="color:#ffcc00;" href="chat-lucia.html" target="_blank">Mensajes Lucía ↔ Mariana</a>';
+  let linkChat2 = '<a style="color:#ffcc00;" href="chat-misterioso.html" target="_blank">Mensajes Lucía ↔ Chico Misterioso</a>';
+  
+  if(estado==='indignado'){
+    // 30% de probabilidad de solo dar uno
+    if(Math.random()<0.3){
+      let elegido = Math.random() < 0.5 ? linkChat1 : linkChat2;
+      info.innerHTML = `<p>Mariana accede a mostrar solo uno de los chats debido a su indignación:</p><p>${elegido}</p>`;
+    } else {
+      info.innerHTML = `<p>Mariana entrega ambos chats, a pesar de su indignación:</p><p>${linkChat1}<br>${linkChat2}</p>`;
+    }
+  } else {
+    info.innerHTML = `<p>Mariana entrega ambos chats:</p><p>${linkChat1}<br>${linkChat2}</p>`;
+  }
 }
 
 function reiniciar() { 
@@ -136,6 +168,7 @@ function reiniciar() {
   estado='normal'; 
   preguntasUsadas=[]; 
   document.getElementById('info').innerHTML='<p>Selecciona una pregunta para empezar el interrogatorio.</p>'; 
+  document.getElementById('botones-final').innerHTML='<button class="btn" onclick="reiniciar()">Reiniciar Interrogatorio</button><a class="btn" href="sala-interrogatorio.html">Volver a la Sala de Interrogatorio</a>';
   mostrarBotones(); 
 }
 
