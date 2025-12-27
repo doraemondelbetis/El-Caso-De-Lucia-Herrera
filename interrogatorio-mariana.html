@@ -145,6 +145,22 @@ function hacerPregunta(idx) {
   }
 }
 
+  function desbloquearMensajes(){
+  const info = document.getElementById('info');
+  let linkChat1 = '<a style="color:#ffcc00;" href="chat-lucia.html" target="_blank">Mensajes Lucía ↔ Mariana</a>';
+  let linkChat2 = '<a style="color:#ffcc00;" href="chat-misterioso.html" target="_blank">Mensajes Lucía ↔ Chico Misterioso</a>';
+  
+  if(estado==='indignado'){
+    if(Math.random()<0.3){
+      let elegido = Math.random() < 0.5 ? linkChat1 : linkChat2;
+      info.innerHTML = `<p>Mariana accede a mostrar solo uno de los chats debido a su indignación:</p><p>${elegido}</p>`;
+    } else {
+      info.innerHTML = `<p>Mariana entrega ambos chats, a pesar de su indignación:</p><p>${linkChat1}<br>${linkChat2}</p>`;
+    }
+  } else {
+    info.innerHTML = `<p>Mariana entrega ambos chats:</p><p>${linkChat1}<br>${linkChat2}</p>`;
+  }
+}
 
 function reiniciar() { 
   nivel=1; 
@@ -161,6 +177,7 @@ mostrarBotones();
 </main>
 </body>
 </html>
+
 
 
 
