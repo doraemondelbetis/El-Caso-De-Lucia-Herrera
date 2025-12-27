@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat Interactivo - Chico Misterioso</title>
+<style>
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background:#121212;
+  color:#fff;
+  margin:0;
+  padding:0;
+}
+header {
+  background:#1e1e1e;
+  color:#fff;
+  padding:15px;
+  text-align:center;
+  border-bottom:3px solid #444;
+}
+h1 { margin:0; font-size:1.8em; }
+main {
+  max-width:600px;
+  margin:20px auto;
+  background:#1c1c1c;
+  border:2px solid #444;
+  border-radius:10px;
+  padding:15px;
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+}
+#chat {
+  background:#262626;
+  border-radius:10px;
+  padding:10px;
+  height:400px;
+  overflow-y:auto;
+  margin-bottom:10px;
+}
+.message {
+  margin:5px 0;
+  padding:10px;
+  border-radius:10px;
+  max-width:80%;
+  clear:both;
+}
+.message.user { background:#ffcc00; color:#000; float:right; text-align:right;}
+.message.chico { background:#444; color:#fff; float:left;}
+.message.typing { font-style: italic; opacity: 0.7; }
+.button-container { text-align:center; margin-top:10px;}
+.btn-question {
+  background:#444;
+  color:#fff;
+  padding:10px 15px;
+  border:none;
+  border-radius:5px;
+  margin:5px;
+  cursor:pointer;
+  transition:0.3s;
+}
+.btn-question:hover { background:#ffcc00; color:#000; }
+</style>
+</head>
+<body>
+
+<audio id="msgSound" src="https://www.myinstants.com/media/sounds/chat-mensaje-62818.mp3"></audio>
+
+<header>
+<h1>Chat con el Chico Misterioso</h1>
+</header>
+
+<main>
+<div id="chat">
+  <div class="message chico">Está en línea...</div>
+</div>
+
+<div class="button-container" id="botones"></div>
+
+<script>
+let nivel = 1;
+
+// 30 niveles, cada nivel tiene 3 preguntas
+const preguntasChico = {
+  1:[{texto:'¿Has visto a Lucía últimamente?', respuesta:'Sí, la vi hace unos días, parecía preocupada.'},
+     {texto:'¿Sueles hablar con ella?', respuesta:'Algunas veces, pero no todo lo que dice es para mí.'},
+     {texto:'¿Conoces a alguien cercano a ella?', respuesta:'Algunos, pero no puedo dar nombres.'}],
+  2:[{texto:'¿Sabe alguien más sobre sus planes?', respuesta:'No puedo decirlo con certeza.'},
+     {texto:'¿Ha mencionado a alguien especial?', respuesta:'Sí, pero no me dijo quién exactamente.'},
+     {texto:'¿Confías en lo que te dice?', respuesta:'Solo parcialmente, nunca todo.'}],
+  3:[{texto:'¿Notas cambios en su comportamiento?', respuesta:'Sí, últimamente está más reservada.'},
+     {texto:'¿Alguien la observa?', respuesta:'No estoy seguro, pero parecía incómoda algunas veces.'},
+     {texto:'¿Ha tenido problemas recientes?', respuesta:'Algunas discusiones, nada más.'}],
+  4:[{texto:'¿Dónde suele pasar el tiempo libre?', respuesta:'A veces en la biblioteca, otras en su apartamento.'},
+     {texto:'¿Ha mencionado viajes o escapadas?', respuesta:'Sí, pero no me dijo detalles.'},
+     {texto:'¿Confía plenamente en ti?', respuesta:'Solo parcialmente, no todo lo que sabe me lo cuenta.'}],
+  5:[{texto:'¿Alguien la ha molestado?', respuesta:'No puedo dar nombres, pero sí ha habido tensiones.'},
+     {texto:'¿Notas que se esconde de alguien?', respuesta:'A veces parece querer evitar ciertas personas.'},
+     {texto:'¿Última vez que la viste tranquila?', respuesta:'Hace unos días, pero estaba pensativa.'}],
+  6:[{texto:'¿Ha comentado sobre su familia?', respuesta:'Sí, pero siempre de manera cuidadosa.'},
+     {texto:'¿Ha mencionado algún chico misterioso?', respuesta:'Sí, pero no dijo quién era.'},
+     {texto:'¿Suele confiar en sus amigos?', respuesta:'Depende de la persona, no en todos.'}],
+  7:[{texto:'¿Notas que alguien la presiona?', respuesta:'A veces, pero no sé quién.'},
+     {texto:'¿Ha cambiado su rutina?', respuesta:'Sí, sale más tarde y evita ciertos lugares.'},
+     {texto:'¿Ha hablado de escaparse o alejarse?', respuesta:'Solo indirectamente, nada concreto.'}],
+  8:[{texto:'¿Última conversación importante con alguien?', respuesta:'Hablamos de cosas triviales, nada revelador.'},
+     {texto:'¿Recibe mensajes sospechosos?', respuesta:'Algunos, pero no puedo decir de quién.'},
+     {texto:'¿Notas que está nerviosa por algo?', respuesta:'Sí, pero no me contó todo.'}],
+  9:[{texto:'¿Ha comentado sobre estudios o trabajo?', respuesta:'Sí, solo cosas generales.'},
+     {texto:'¿Alguien la vigila?', respuesta:'Podría ser, no estoy seguro.'},
+     {texto:'¿Confía en su hermano?', respuesta:'Sí, mucho, pero no todo lo comparte.'}],
+  10:[{texto:'¿Últimos días antes de desaparecer?', respuesta:'Parecía pensativa y cautelosa.'},
+      {texto:'¿Ha mencionado planes con amigos?', respuesta:'Sí, pero muy breves, no dio detalles.'},
+      {texto:'¿Alguien influyó en sus decisiones?', respuesta:'Solo indirectamente, nada claro.'}],
+  11:[{texto:'¿Notas que alguien la sigue?', respuesta:'A veces se ve incómoda, pero no puedo afirmar.'},
+      {texto:'¿Ha comentado sobre problemas recientes?', respuesta:'Sí, cosas pequeñas, nada peligroso.'},
+      {texto:'¿Última vez que la viste sonriente?', respuesta:'Hace unos días, pero algo la preocupaba.'}],
+  12:[{texto:'¿Ha tenido conflictos con amigos?', respuesta:'Pequeñas discusiones, nada grave.'},
+      {texto:'¿Alguien le envía mensajes misteriosos?', respuesta:'Sí, pero no los compartió conmigo.'},
+      {texto:'¿Confía en ti lo suficiente?', respuesta:'Solo parcialmente, no todo.'}],
+  13:[{texto:'¿Última conversación que tuviste con ella?', respuesta:'Hablamos de cosas generales, no de su vida personal.'},
+      {texto:'¿Alguien más sabe de sus planes?', respuesta:'No puedo decirlo.'},
+      {texto:'¿Notas que evita a alguien?', respuesta:'Sí, pero no sé quién exactamente.'}],
+  14:[{texto:'¿Algún lugar que visite frecuentemente?', respuesta:'Algunos cafés y la biblioteca, nada más.'},
+      {texto:'¿Ha cambiado su comportamiento?', respuesta:'Sí, está más cautelosa últimamente.'},
+      {texto:'¿Alguien intenta manipularla?', respuesta:'Podría ser, no estoy seguro.'}],
+  15:[{texto:'¿Últimos mensajes importantes que viste?', respuesta:'Nada claro, solo fragmentos.'},
+      {texto:'¿Ha hablado de alguien misterioso?', respuesta:'Sí, pero no dijo su nombre.'},
+      {texto:'¿Confías en sus amigos?', respuesta:'Depende de la persona, no todos.'}],
+  16:[{texto:'¿Notas cambios en su estado de ánimo?', respuesta:'Sí, más pensativa y reservada.'},
+      {texto:'¿Alguien la amenaza?', respuesta:'No puedo decir nombres, pero hubo tensiones.'},
+      {texto:'¿Última vez que la viste preocupada?', respuesta:'Hace pocos días, parecía alerta.'}],
+  17:[{texto:'¿Ha recibido regalos o notas?', respuesta:'Sí, siempre las guardaba en secreto.'},
+      {texto:'¿Confía en alguien nuevo?', respuesta:'Solo parcialmente, no lo sé todo.'},
+      {texto:'¿Ha mencionado planes de viaje?', respuesta:'Sí, pero de forma discreta.'}],
+  18:[{texto:'¿Ha cambiado de rutina?', respuesta:'Sí, sale más tarde y evita lugares conocidos.'},
+      {texto:'¿Alguien influye en sus decisiones?', respuesta:'No puedo decirlo claramente.'},
+      {texto:'Última conversación que recuerdas?', respuesta:'Trivial, no reveladora.'}],
+  19:[{texto:'¿Notas a alguien extraño cerca de ella?', respuesta:'Sí, algunas veces.'},
+      {texto:'¿Ha comentado sobre problemas personales?', respuesta:'Sí, pero muy vagamente.'},
+      {texto:'¿Confía plenamente en alguien?', respuesta:'No completamente, siempre parcial.'}],
+  20:[{texto:'¿Últimos días antes de desaparecer?', respuesta:'Parecía más reservada y cuidadosa.'},
+      {texto:'¿Ha dejado pistas sobre su paradero?', respuesta:'Solo indirectamente, nada concreto.'},
+      {texto:'¿Alguien la vigila?', respuesta:'Podría ser, no lo sé con certeza.'}],
+  21:[{texto:'¿Confía en sus amigos más cercanos?', respuesta:'Depende de cada uno.'},
+      {texto:'¿Notas que evita a alguien?', respuesta:'Sí, pero no sé quién.'},
+      {texto:'¿Ha mencionado un chico misterioso?', respuesta:'Sí, pero muy discreto.'}],
+  22:[{texto:'¿Última vez que la viste feliz?', respuesta:'Hace unos días, pero parecía cautelosa.'},
+      {texto:'¿Alguien le causa temor?', respuesta:'Sí, pero no puedo decir quién.'},
+      {texto:'¿Confía en ti?', respuesta:'Solo parcialmente, nada completo.'}],
+  23:[{texto:'¿Ha comentado sobre cambios recientes?', respuesta:'Sí, de manera muy vaga.'},
+      {texto:'¿Notas que alguien la sigue?', respuesta:'A veces, no estoy seguro de quién.'},
+      {texto:'¿Última conversación importante?', respuesta:'Trivial, nada revelador.'}],
+  24:[{texto:'¿Ha recibido llamadas o mensajes extraños?', respuesta:'Sí, los borraba rápido.'},
+      {texto:'¿Alguien intenta manipularla?', respuesta:'No puedo asegurarlo.'},
+      {texto:'¿Ha cambiado su comportamiento con amigos?', respuesta:'Sí, está más cautelosa.'}],
+  25:[{texto:'¿Última vez que la viste tranquila?', respuesta:'Hace días, pero parecía nerviosa.'},
+      {texto:'¿Ha mencionado escaparse o irse?', respuesta:'Solo indirectamente, nada claro.'},
+      {texto:'¿Confía en alguien nuevo?', respuesta:'Parcialmente, no completamente.'}],
+  26:[{texto:'¿Notas que alguien vigila sus movimientos?', respuesta:'Sí, algunas veces.'},
+      {texto:'¿Alguien más sabe de sus secretos?', respuesta:'No puedo decirlo.'},
+      {texto:'¿Últimos días antes de desaparecer?', respuesta:'Parecía más alerta y reservada.'}],
+  27:[{texto:'¿Algún lugar que evita?', respuesta:'Sí, algunos lugares de su vecindario.'},
+      {texto:'¿Ha dejado pistas sobre sus relaciones?', respuesta:'Sí, pero muy discretas.'},
+      {texto:'¿Alguien influyó en sus decisiones recientes?', respuesta:'No quiero contestar eso.'}],
+  28:[{texto:'Última vez que la viste sonriente?', respuesta:'Hace pocos días, pero cautelosa.'},
+      {texto:'¿Notas que alguien le da órdenes?', respuesta:'Podría ser, no lo sé con certeza.'},
+      {texto:'¿Ha hablado de algún chico misterioso?', respuesta:'Sí, pero sin dar nombres.'}],
+  29:[{texto:'¿Alguien influyó en su vida reciente?', respuesta:'No puedo decirlo.'},
+      {texto:'¿Notas cambios en su rutina diaria?', respuesta:'Sí, se volvió más reservada.'},
+      {texto:'¿Última interacción con amigos cercanos?', respuesta:'Parecía pensativa y alerta.'}],
+  30:[{texto:'¿Alguna pista definitiva sobre su paradero?', respuesta:'No puedo darlo directamente, pero revisen pistas anteriores.'},
+      {texto:'Último mensaje que te dio?', respuesta:'Que cuide todo lo que sabe y no confíe plenamente.'},
+      {texto:'¿Ha tomado decisiones arriesgadas?', respuesta:'Sí, muy discretas y secretas.'}]
+};
+
+function mostrarOpciones() {
+  const cont = document.getElementById('botones');
+  cont.innerHTML = '';
+  preguntasChico[nivel].forEach((p, idx) => {
+    cont.innerHTML += `<button class="btn-question" onclick="hacerPregunta(${idx})">${p.texto}</button>`;
+  });
+}
+
+function hacerPregunta(idx) {
+  const p = preguntasChico[nivel][idx];
+  const chat = document.getElementById('chat');
+
+  // Mensaje del usuario
+  const userMsg = document.createElement('div');
+  userMsg.className = 'message user';
+  userMsg.textContent = p.texto;
+  chat.appendChild(userMsg);
+  chat.scrollTop = chat.scrollHeight;
+
+  // Animación escribiendo
+  const typing = document.createElement('div');
+  typing.className = 'message chico typing';
+  typing.textContent = 'Escribiendo...';
+  chat.appendChild(typing);
+  chat.scrollTop = chat.scrollHeight;
+
+  setTimeout(() => {
+    typing.remove();
+    const msg = document.createElement('div');
+    msg.className = 'message chico';
+    msg.textContent = p.respuesta;
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
+
+    // Sonido notificación
+    document.getElementById('msgSound').play();
+  }, 1000);
+
+  // Pasar al siguiente nivel
+  if (nivel < Object.keys(preguntasChico).length) {
+    nivel++;
+    mostrarOpciones();
+  } else {
+    document.getElementById('botones').innerHTML = '<p>Has completado el chat. Analiza la información obtenida.</p>';
+  }
+}
+
+mostrarOpciones();
+</script>
+
+</main>
+</body>
+</html>
