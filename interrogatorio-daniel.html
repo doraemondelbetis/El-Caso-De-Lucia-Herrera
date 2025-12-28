@@ -2,246 +2,143 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Interrogatorio — Daniel Ríos</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interrogatorio - Daniel Ríos</title>
 <style>
-body{
-  background:#121212;
-  color:#e0e0e0;
-  font-family:"Courier New", monospace;
-  margin:0;
-}
-header{
-  background:#1e1e1e;
-  padding:20px;
-  text-align:center;
-  border-bottom:3px solid #444;
-}
-main{
-  max-width:800px;
-  margin:20px auto;
-  padding:20px;
-  background:#1c1c1c;
-  border:2px solid #444;
-  box-shadow:3px 3px 10px rgba(0,0,0,0.6);
-}
-#dialogo{
-  min-height:120px;
-  padding:15px;
-  background:#262626;
-  border:1px dashed #666;
-  margin-bottom:20px;
-}
-#preguntas button{
-  display:block;
-  width:100%;
-  margin:10px 0;
-  padding:12px;
-  background:#333;
-  color:#fff;
-  border:none;
-  cursor:pointer;
-  transition:.3s;
-  font-size:16px;
-}
-#preguntas button:hover{
-  background:#ffcc00;
-  color:#000;
-}
-#final{
-  text-align:center;
-  margin-top:25px;
-}
-.btn{
-  background:#ffcc00;
-  color:#000;
-  padding:14px 20px;
-  font-weight:bold;
-  text-decoration:none;
-  display:inline-block;
-  border-radius:4px;
-}
+body { font-family:"Courier New",Courier,monospace; background:#121212; color:#e0e0e0; margin:0; padding:0;}
+header { background:#1e1e1e; color:#fff; padding:20px; text-align:center; border-bottom:4px solid #444; }
+h1 { margin:0; font-size:2.5em; }
+h2 { margin:5px 0 20px 0; font-size:1.5em; color:#ccc; font-weight:normal; }
+main { max-width:900px; margin:20px auto; padding:20px; background:#1c1c1c; border:2px solid #444; box-shadow:3px 3px 10px rgba(0,0,0,0.5); }
+.button-container { text-align:center; margin-top:20px; }
+.btn, .btn-question { background:#444; color:#fff; padding:12px 20px; border:none; border-radius:4px; cursor:pointer; margin:5px 5px 0 0; transition:0.3s; font-size:16px; }
+.btn:hover, .btn-question:hover { background:#ffcc00; color:#000; }
+.info-box { margin-top:20px; padding:15px; background:#262626; border:1px solid #555; min-height:150px; }
+@media(max-width:600px){ .btn, .btn-question { width:100%; font-size:18px; margin-top:12px;} }
 </style>
 </head>
-
 <body>
 
 <header>
-<h1>Interrogatorio</h1>
-<h2>Daniel Ríos — Profesor</h2>
+<h1>Interrogatorio: Daniel Ríos</h1>
+<h2>Profesor universitario</h2>
 </header>
 
 <main>
+<div class="info-box" id="info">
+<p>Selecciona una pregunta para comenzar el interrogatorio.</p>
+</div>
 
-<div id="dialogo"></div>
-<div id="preguntas"></div>
-<div id="final"></div>
+<div class="button-container" id="botones"></div>
 
-</main>
+<div class="button-container" id="botones-final">
+<button class="btn" onclick="reiniciar()">Reiniciar Interrogatorio</button>
+<a class="btn" href="sala-interrogatorio.html">Volver a la Sala de Interrogatorio</a>
+</div>
 
 <script>
-let nivel = 0;
+let nivel = 1;
+let estado = 'normal';
+let preguntasUsadas = [];
 
-const niveles = [
-  {
-    texto:"No suelo involucrarme en asuntos personales de mis alumnos.",
-    preguntas:[
-      "¿Cómo describiría a Lucía como estudiante?",
-      "¿La notó distinta últimamente?",
-      "¿Hablaban fuera de clase?"
-    ],
-    respuestas:[
-      "Era observadora. Más de lo habitual.",
-      "Sí, pero no por motivos académicos.",
-      "Solo sobre trabajos."
-    ]
-  },
-  {
-    texto:"Había algo que claramente la inquietaba.",
-    preguntas:[
-      "¿Le habló de algún problema?",
-      "¿Mencionó a alguien?",
-      "¿Parecía asustada?"
-    ],
-    respuestas:[
-      "No entró en detalles.",
-      "No dio nombres.",
-      "Más precavida que asustada."
-    ]
-  },
-  {
-    texto:"Insistió en que fuera discreto.",
-    preguntas:[
-      "¿Por qué le pidió discreción?",
-      "¿Le confió algo?",
-      "¿Usted aceptó?"
-    ],
-    respuestas:[
-      "Decía que no todos debían saberlo.",
-      "Sí.",
-      "Cometí ese error."
-    ]
-  },
-  {
-    texto:"Me entregó algo para resguardar.",
-    preguntas:[
-      "¿Qué era?",
-      "¿Por qué usted?",
-      "¿Sabía lo que contenía?"
-    ],
-    respuestas:[
-      "Un cuaderno.",
-      "Porque pensó que estaría a salvo.",
-      "No completamente."
-    ]
-  },
-  {
-    texto:"No era un cuaderno común.",
-    preguntas:[
-      "¿Qué tenía de distinto?",
-      "¿Había nombres?",
-      "¿Había códigos?"
-    ],
-    respuestas:[
-      "La forma en que estaba escrito.",
-      "No directamente.",
-      "Demasiados."
-    ]
-  },
-  {
-    texto:"Lucía observaba más de lo que hablaba.",
-    preguntas:[
-      "¿A quién observaba?",
-      "¿Desde cuándo?",
-      "¿Lo hacía sola?"
-    ],
-    respuestas:[
-      "No lo sé con certeza.",
-      "Desde semanas antes.",
-      "Eso parecía."
-    ]
-  },
-  {
-    texto:"Intentó advertirme, a su manera.",
-    preguntas:[
-      "¿Advertirle de qué?",
-      "¿De quién?",
-      "¿Por qué no actuó?"
-    ],
-    respuestas:[
-      "De que algo iba a pasar.",
-      "No lo dijo.",
-      "Creí que exageraba."
-    ]
-  },
-  {
-    texto:"Cuando desapareció, entendí demasiado tarde.",
-    preguntas:[
-      "¿Intentó contactarla?",
-      "¿Revisó el cuaderno?",
-      "¿Encontró algo?"
-    ],
-    respuestas:[
-      "Nunca respondió.",
-      "Con más atención.",
-      "Patrones."
-    ]
-  },
-  {
-    texto:"No todo está escrito para leerse literalmente.",
-    preguntas:[
-      "¿Qué quiere decir?",
-      "¿Es un código?",
-      "¿Se puede descifrar?"
-    ],
-    respuestas:[
-      "El orden importa.",
-      "Las formas también.",
-      "Sí, si saben cómo mirar."
-    ]
-  },
-  {
-    texto:"Es momento de entregarlo.",
-    preguntas:[
-      "¿Nos dará el cuaderno?",
-      "¿Está seguro?",
-      "¿Lucía quería esto?"
-    ],
-    respuestas:[
-      "Sí.",
-      "Más que nunca.",
-      "Confiaba en que alguien lo entendería."
-    ]
-  }
-];
+const preguntas = {
+1:[
+ {texto:"¿Cómo era Lucía como alumna?",respuesta:"Atenta, muy observadora. Más de lo habitual.",delicada:false},
+ {texto:"¿La notó diferente últimamente?",respuesta:"Sí, más cautelosa.",delicada:false},
+ {texto:"¿Hablaban de temas personales?",respuesta:"No debería hacerlo.",delicada:true}
+],
+2:[
+ {texto:"¿Lucía le pidió discreción?",respuesta:"Sí. Insistió mucho.",delicada:false},
+ {texto:"¿Le contó por qué?",respuesta:"No directamente.",delicada:false},
+ {texto:"¿Le habló de alguien?",respuesta:"Prefiero no responder eso.",delicada:true}
+],
+3:[
+ {texto:"¿Le confió algo importante?",respuesta:"Me entregó un cuaderno.",delicada:false},
+ {texto:"¿Por qué a usted?",respuesta:"Pensó que estaría a salvo.",delicada:false},
+ {texto:"¿Sabía qué contenía?",respuesta:"No completamente.",delicada:false}
+],
+4:[
+ {texto:"¿Qué tenía de especial el cuaderno?",respuesta:"Nada era literal.",delicada:false},
+ {texto:"¿Había nombres?",respuesta:"No escritos claramente.",delicada:false},
+ {texto:"¿Había códigos?",respuesta:"Demasiados.",delicada:false}
+],
+5:[
+ {texto:"¿Lucía tenía miedo?",respuesta:"Más bien estaba alerta.",delicada:false},
+ {texto:"¿De alguien en específico?",respuesta:"Nunca lo dijo.",delicada:false},
+ {texto:"¿Usted sospechó algo?",respuesta:"No lo suficiente.",delicada:false}
+],
+6:[
+ {texto:"¿Intentó ayudarla?",respuesta:"A mi manera.",delicada:false},
+ {texto:"¿Fue suficiente?",respuesta:"Claramente no.",delicada:false},
+ {texto:"¿Se arrepiente?",respuesta:"Mucho.",delicada:false}
+],
+7:[
+ {texto:"¿Lucía dejó advertencias?",respuesta:"Indirectas.",delicada:false},
+ {texto:"¿Cómo eran?",respuesta:"Patrones, letras fuera de lugar.",delicada:false},
+ {texto:"¿Todo está en el cuaderno?",respuesta:"Sí.",delicada:false}
+],
+8:[
+ {texto:"¿Revisó el cuaderno tras su desaparición?",respuesta:"Con otros ojos.",delicada:false},
+ {texto:"¿Encontró algo claro?",respuesta:"No claro, pero coherente.",delicada:false},
+ {texto:"¿Alguien más lo vio?",respuesta:"No.",delicada:false}
+],
+9:[
+ {texto:"¿Por qué no lo entregó antes?",respuesta:"Creí que no era mi lugar.",delicada:false},
+ {texto:"¿Lucía quería que se leyera?",respuesta:"Quería que se entendiera.",delicada:false},
+ {texto:"¿Estamos listos?",respuesta:"Eso espero.",delicada:false}
+],
+10:[
+ {texto:"¿Nos dará el cuaderno?",respuesta:"Sí.",delicada:false},
+ {texto:"¿Es peligroso?",respuesta:"Depende de quién lo lea.",delicada:false},
+ {texto:"¿Lucía confió en nosotros?",respuesta:"Ahora lo hará.",delicada:false}
+]
+};
 
-function cargarNivel(){
-  const d = document.getElementById("dialogo");
-  const p = document.getElementById("preguntas");
-  d.innerHTML = `<p>${niveles[nivel].texto}</p>`;
-  p.innerHTML = "";
-
-  niveles[nivel].preguntas.forEach((q,i)=>{
-    const b = document.createElement("button");
-    b.textContent = q;
-    b.onclick = ()=>{
-      d.innerHTML += `<p><strong>Respuesta:</strong> ${niveles[nivel].respuestas[i]}</p>`;
-      setTimeout(()=>{
-        nivel++;
-        if(nivel < niveles.length){
-          cargarNivel();
-        } else {
-          document.getElementById("final").innerHTML =
-          `<a class="btn" href="cuaderno-profesor.html">📓 Obtener cuaderno del profesor</a>`;
-        }
-      },800);
-    };
-    p.appendChild(b);
-  });
+function mostrarBotones(){
+ const cont=document.getElementById("botones");
+ cont.innerHTML="";
+ preguntas[nivel].forEach((p,idx)=>{
+  cont.innerHTML+=`<button class="btn-question" onclick="hacerPregunta(${idx})">${p.texto}</button>`;
+ });
 }
 
-cargarNivel();
+function hacerPregunta(idx){
+ const p=preguntas[nivel][idx];
+ const info=document.getElementById("info");
+
+ if(p.delicada){
+  info.innerHTML='<p>Daniel evita la pregunta y guarda silencio.</p>';
+  return;
+ }
+
+ info.innerHTML=`<p>${p.respuesta}</p>`;
+
+ if(nivel<10){
+  nivel++;
+  mostrarBotones();
+ }else{
+  document.getElementById("botones").innerHTML="";
+  document.getElementById("botones-final").insertAdjacentHTML(
+   "afterbegin",
+   `<a class="btn" href="cuaderno-profesor.html">📓 Obtener cuaderno del profesor</a>`
+  );
+ }
+}
+
+function reiniciar(){
+ nivel=1;
+ estado='normal';
+ preguntasUsadas=[];
+ document.getElementById("info").innerHTML='<p>Selecciona una pregunta para comenzar el interrogatorio.</p>';
+ document.getElementById("botones-final").innerHTML=
+ '<button class="btn" onclick="reiniciar()">Reiniciar Interrogatorio</button>\
+ <a class="btn" href="sala-interrogatorio.html">Volver a la Sala de Interrogatorio</a>';
+ mostrarBotones();
+}
+
+mostrarBotones();
 </script>
 
+</main>
 </body>
 </html>
