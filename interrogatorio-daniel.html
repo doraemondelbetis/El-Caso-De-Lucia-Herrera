@@ -6,75 +6,98 @@
 
 <style>
 body{
-  background:#121212;
-  color:#e0e0e0;
-  font-family:Arial, sans-serif;
+  background:#0f0f0f;
+  font-family:"Helvetica Neue", Arial, sans-serif;
   margin:0;
+  color:#fff;
 }
 header{
-  background:#1e1e1e;
-  padding:15px;
+  background:#1f1f1f;
+  padding:12px;
   text-align:center;
-  border-bottom:3px solid #444;
+  border-bottom:2px solid #333;
 }
 main{
-  max-width:850px;
+  max-width:600px;
   margin:20px auto;
-  background:#1c1c1c;
-  border:2px solid #444;
-  padding:20px;
+  background:#111;
+  border-radius:10px;
+  border:1px solid #333;
+  display:flex;
+  flex-direction:column;
+  height:80vh;
 }
-#respuesta{
-  min-height:150px;
-  background:#262626;
-  border:1px solid #555;
+#chat{
+  flex:1;
   padding:15px;
-  margin-bottom:20px;
+  overflow-y:auto;
 }
-.opciones button{
-  display:block;
+.msg{
+  max-width:75%;
+  padding:10px 14px;
+  border-radius:12px;
+  margin:6px 0;
+  line-height:1.4;
+  font-size:15px;
+}
+.jugador{
+  background:#dcf8c6;
+  color:#000;
+  margin-left:auto;
+  border-bottom-right-radius:2px;
+}
+.daniel{
+  background:#2a2a2a;
+  color:#fff;
+  margin-right:auto;
+  border-bottom-left-radius:2px;
+}
+.typing{
+  font-style:italic;
+  opacity:0.7;
+}
+#opciones{
+  padding:10px;
+  border-top:1px solid #333;
+}
+#opciones button{
   width:100%;
-  margin:8px 0;
-  padding:12px;
-  background:#333;
+  margin:6px 0;
+  padding:10px;
+  background:#222;
   color:#fff;
   border:none;
-  border-radius:4px;
+  border-radius:6px;
   cursor:pointer;
-  font-size:16px;
+  font-size:15px;
 }
-.opciones button:hover{
+#opciones button:hover{
   background:#ffcc00;
   color:#000;
 }
-.center{ text-align:center; }
 .btn{
-  background:#444;
-  color:#fff;
-  padding:12px 18px;
-  border:none;
-  border-radius:4px;
-  cursor:pointer;
-  font-size:16px;
-}
-.btn:hover{
   background:#ffcc00;
   color:#000;
+  padding:12px 16px;
+  border-radius:6px;
+  text-decoration:none;
+  font-weight:bold;
+  display:inline-block;
 }
+.center{ text-align:center; margin-top:15px; }
 </style>
 </head>
 
 <body>
 
 <header>
-<h1>Interrogatorio</h1>
-<h3>Profesor Daniel Ríos</h3>
+<strong>Interrogatorio — Daniel Ríos</strong>
 </header>
 
 <main>
 
-<div id="respuesta"></div>
-<div class="opciones" id="opciones"></div>
+<div id="chat"></div>
+<div id="opciones"></div>
 
 </main>
 
@@ -83,206 +106,139 @@ let nivel = 0;
 
 const niveles = [
   {
-    texto:"Daniel ajusta sus lentes. — No suelo involucrarme en asuntos personales.",
+    intro:"No suelo involucrarme en asuntos personales.",
     preguntas:[
-      {
-        q:"Queremos entender cómo era Lucía en clase.",
-        r:"Era observadora. Hacía preguntas que otros evitaban."
-      },
-      {
-        q:"¿La notó nerviosa los últimos días?",
-        r:"Sí… pero no por exámenes."
-      },
-      {
-        q:"¿Usted hablaba con ella fuera de clase?",
-        r:"Solo lo estrictamente académico."
-      }
+      {q:"Queremos saber cómo era Lucía en clase.", r:"Observadora. Hacía preguntas que otros evitaban."},
+      {q:"¿La notó nerviosa últimamente?", r:"Sí… pero no por exámenes."},
+      {q:"¿Hablaban fuera de clase?", r:"Solo lo académico."}
     ]
   },
   {
-    texto:"Daniel se acomoda en la silla.",
+    intro:"Se ajusta los lentes.",
     preguntas:[
-      {
-        q:"¿Le contó si tenía problemas con alguien?",
-        r:"No con nombres. Solo dijo que alguien la seguía."
-      },
-      {
-        q:"¿Eso le pareció grave?",
-        r:"Más de lo que aparenté en ese momento."
-      },
-      {
-        q:"¿Por qué no avisó a nadie?",
-        r:"Creí que exageraba."
-      }
+      {q:"¿Le habló de problemas con alguien?", r:"No dio nombres. Solo dijo que alguien la seguía."},
+      {q:"¿Le preocupó eso?", r:"Más de lo que aparenté."},
+      {q:"¿Avisó a alguien?", r:"Creí que exageraba."}
     ]
   },
   {
-    texto:"Evita mirarte directamente.",
+    intro:"Evita mirarte.",
     preguntas:[
-      {
-        q:"¿Lucía confiaba en usted?",
-        r:"Más de lo que debería un alumno con un profesor."
-      },
-      {
-        q:"¿Le dio algo para guardar?",
-        r:"Sí… aunque no debía."
-      },
-      {
-        q:"¿Ese algo tiene relación con su desaparición?",
-        r:"Temo que sí."
-      }
+      {q:"¿Lucía confiaba en usted?", r:"Más de lo normal."},
+      {q:"¿Le dio algo para guardar?", r:"Sí. Algo que no debía."},
+      {q:"¿Tiene relación con su desaparición?", r:"Temo que sí."}
     ]
   },
   {
-    texto:"Suspira con cansancio.",
+    intro:"Suspira.",
     preguntas:[
-      {
-        q:"¿Qué contenía eso que le dio?",
-        r:"Apuntes. Observaciones. Cosas que no cuadraban."
-      },
-      {
-        q:"¿Sobre quién?",
-        r:"Sobre alguien que no debía aparecer."
-      },
-      {
-        q:"¿Un estudiante?",
-        r:"No."
-      }
+      {q:"¿Qué era ese objeto?", r:"Un cuaderno."},
+      {q:"¿Qué contenía?", r:"Observaciones. Códigos."},
+      {q:"¿Sobre quién?", r:"Sobre alguien que no debía aparecer."}
     ]
   },
   {
-    texto:"Daniel se queda en silencio unos segundos.",
+    intro:"Mira al suelo.",
     preguntas:[
-      {
-        q:"¿Lucía investigaba a alguien?",
-        r:"Más bien… se protegía."
-      },
-      {
-        q:"¿Le pidió ayuda?",
-        r:"Me pidió que guardara ese cuaderno."
-      },
-      {
-        q:"¿Le pidió discreción?",
-        r:"Insistió demasiado."
-      }
+      {q:"¿Lucía investigaba a alguien?", r:"Más bien se protegía."},
+      {q:"¿Le pidió discreción?", r:"Insistió demasiado."},
+      {q:"¿Por qué aceptó?", r:"Porque tenía miedo."}
     ]
   },
   {
-    texto:"Se frota las manos, nervioso.",
+    intro:"Se frota las manos.",
     preguntas:[
-      {
-        q:"¿Pensó en devolverle el cuaderno?",
-        r:"No tuve oportunidad."
-      },
-      {
-        q:"¿Por qué?",
-        r:"Dejó de venir."
-      },
-      {
-        q:"¿Cuándo fue la última vez que la vio?",
-        r:"Dos días antes de desaparecer."
-      }
+      {q:"¿Cuándo la vio por última vez?", r:"Dos días antes de desaparecer."},
+      {q:"¿Intentó devolverle el cuaderno?", r:"No tuve oportunidad."},
+      {q:"¿Por qué?", r:"Dejó de venir."}
     ]
   },
   {
-    texto:"La tensión aumenta.",
+    intro:"Respira hondo.",
     preguntas:[
-      {
-        q:"¿El cuaderno menciona nombres?",
-        r:"No directamente."
-      },
-      {
-        q:"¿Códigos?",
-        r:"Sí… muchos."
-      },
-      {
-        q:"¿Lugares?",
-        r:"También."
-      }
+      {q:"¿El cuaderno tiene nombres?", r:"No directamente."},
+      {q:"¿Tiene códigos?", r:"Muchos."},
+      {q:"¿Lugares?", r:"También."}
     ]
   },
   {
-    texto:"Daniel asiente lentamente.",
+    intro:"Asiente lentamente.",
     preguntas:[
-      {
-        q:"¿Ese cuaderno podría ayudarnos?",
-        r:"Si saben leerlo."
-      },
-      {
-        q:"¿Es peligroso tenerlo?",
-        r:"Para ustedes… menos que para ella."
-      },
-      {
-        q:"¿Por qué no lo entregó antes?",
-        r:"Miedo."
-      }
+      {q:"¿Puede ayudarnos?", r:"Si saben leerlo."},
+      {q:"¿Es peligroso?", r:"Para ustedes, menos que para ella."},
+      {q:"¿Por qué no lo entregó antes?", r:"Miedo."}
     ]
   },
   {
-    texto:"Se levanta y toma su portafolio.",
+    intro:"Abre su portafolio.",
     preguntas:[
-      {
-        q:"¿Está dispuesto a entregarlo ahora?",
-        r:"No tengo derecho a ocultarlo más."
-      },
-      {
-        q:"¿Confía en nosotras?",
-        r:"Más que en mí mismo."
-      },
-      {
-        q:"¿Lucía quería que lo viéramos?",
-        r:"Exactamente."
-      }
+      {q:"¿Nos lo dará ahora?", r:"No tengo derecho a ocultarlo más."},
+      {q:"¿Confía en nosotras?", r:"Más que en mí mismo."},
+      {q:"¿Lucía quería esto?", r:"Exactamente."}
     ]
   },
   {
-    texto:"Daniel coloca un cuaderno sobre la mesa.",
+    intro:"Coloca un cuaderno sobre la mesa.",
     preguntas:[
-      {
-        q:"Lo revisaremos con cuidado.",
-        r:"Eso esperaba."
-      },
-      {
-        q:"¿Algo más que debamos saber?",
-        r:"No todo está escrito literalmente."
-      },
-      {
-        q:"¿A qué se refiere?",
-        r:"A cómo está escrito."
-      }
+      {q:"Lo revisaremos.", r:"Eso esperaba."},
+      {q:"¿Algo más?", r:"No todo está escrito literalmente."},
+      {q:"¿A qué se refiere?", r:"A cómo está escrito."}
     ]
   }
 ];
 
+const chat = document.getElementById("chat");
+const opciones = document.getElementById("opciones");
+
+function escribirDaniel(texto){
+  const typing = document.createElement("div");
+  typing.className = "msg daniel typing";
+  typing.innerText = "Daniel está escribiendo…";
+  chat.appendChild(typing);
+  chat.scrollTop = chat.scrollHeight;
+
+  setTimeout(()=>{
+    typing.remove();
+    const msg = document.createElement("div");
+    msg.className = "msg daniel";
+    msg.innerText = texto;
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
+  },1000);
+}
+
 function cargarNivel(){
-  const r = document.getElementById("respuesta");
-  const o = document.getElementById("opciones");
-  o.innerHTML = "";
+  opciones.innerHTML = "";
 
   if(nivel < niveles.length){
-    r.innerText = niveles[nivel].texto;
+    escribirDaniel(niveles[nivel].intro);
 
     niveles[nivel].preguntas.forEach(p=>{
       const b = document.createElement("button");
       b.innerText = p.q;
       b.onclick = ()=>{
-        r.innerText = "— " + p.r;
-        o.innerHTML = "";
+        const user = document.createElement("div");
+        user.className = "msg jugador";
+        user.innerText = p.q;
+        chat.appendChild(user);
+        opciones.innerHTML = "";
+        escribirDaniel(p.r);
         setTimeout(()=>{
           nivel++;
           cargarNivel();
-        },1200);
+        },1300);
       };
-      o.appendChild(b);
+      opciones.appendChild(b);
     });
   } else {
-    r.innerHTML = `
-      <p><strong>Daniel se levanta lentamente.</strong></p>
-      <p>— Lucía dijo que alguien sabría interpretar esto.</p>
-      <div class="center">
-        <a href="cuaderno-profesor.html" class="btn">📓 Abrir cuaderno del profesor</a>
-      </div>
-    `;
+    escribirDaniel("Lucía dijo que alguien sabría interpretar esto.");
+    setTimeout(()=>{
+      opciones.innerHTML = `
+        <div class="center">
+          <a href="cuaderno-profesor.html" class="btn">📓 Abrir cuaderno del profesor</a>
+        </div>
+      `;
+    },1200);
   }
 }
 
