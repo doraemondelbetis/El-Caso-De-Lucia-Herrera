@@ -2,185 +2,42 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interrogatorio - Daniel Ríos</title>
-<style>
-body { font-family:"Courier New",Courier,monospace; background:#121212; color:#e0e0e0; margin:0; padding:0;}
-header { background:#1e1e1e; color:#fff; padding:20px; text-align:center; border-bottom:4px solid #444; }
-h1 { margin:0; font-size:2.5em; }
-h2 { margin:5px 0 20px 0; font-size:1.5em; color:#ccc; font-weight:normal; }
-main { max-width:900px; margin:20px auto; padding:20px; background:#1c1c1c; border:2px solid #444; box-shadow:3px 3px 10px rgba(0,0,0,0.5); }
-.button-container { text-align:center; margin-top:20px; }
-.btn, .btn-question { background:#444; color:#fff; padding:12px 20px; border:none; border-radius:4px; cursor:pointer; margin:5px 5px 0 0; transition:0.3s; font-size:16px; }
-.btn:hover, .btn-question:hover { background:#ffcc00; color:#000; }
-.info-box { margin-top:20px; padding:15px; background:#262626; border:1px solid #555; min-height:150px; }
-@media(max-width:600px){ .btn, .btn-question { width:100%; font-size:18px; margin-top:12px;} }
-</style>
-</head>
-<body>
-
-<header>
-<h1>Interrogatorio: Daniel Ríos</h1>
-<h2>Interactúa y selecciona tus preguntas</h2>
-</header>
-
-<main>
-<div class="info-box" id="info">
-<p>Selecciona una pregunta para empezar el interrogatorio.</p>
-</div>
-
-<div class="button-container" id="botones"></div>
-
-<div class="button-container">
-<button class="btn" onclick="reiniciar()">Reiniciar Interrogatorio</button>
-<a class="btn" href="sala-interrogatorio.html">Volver a la Sala de Interrogatorio</a>
-</div>
-
-<script>
-let nivel = 1;
-let estado = 'normal';
-let preguntasUsadas = [];
-const preguntas = {
-  1: [
-    {texto:'Dónde estabas la noche de la desaparición?', respuesta:'Estaba corrigiendo exámenes en mi despacho.', delicada:false},
-    {texto:'Qué relación tenías con Lucía?', respuesta:'Era mi alumna, muy aplicada y responsable.', delicada:false},
-    {texto:'Notaste algo extraño en ella?', respuesta:'Sí, últimamente parecía más preocupada de lo habitual.', delicada:false}
-  ],
-  2: [
-    {texto:'Problemas académicos recientes?', respuesta:'Solo algunas entregas atrasadas, nada serio.', delicada:false},
-    {texto:'Alguien le causaba miedo?', respuesta:'No quiero contestar eso.', delicada:true},
-    {texto:'Última interacción que tuviste con ella?', respuesta:'Le revisé un proyecto y le di consejos.', delicada:false}
-  ],
-  3: [
-    {texto:'Alguien más involucrado en su desaparición?', respuesta:'No quiero revelar eso.', delicada:true},
-    {texto:'Cambios de comportamiento?', respuesta:'Sí, estaba más ansiosa y reservada.', delicada:false},
-    {texto:'Alguna persona sospechosa cerca de la universidad?', respuesta:'Vi un chico extraño rondando el campus.', delicada:false}
-  ],
-  4: [
-    {texto:'Sabías de conflictos personales?', respuesta:'No, nada grave que yo sepa.', delicada:false},
-    {texto:'Alguien le daba indicaciones sospechosas?', respuesta:'No quiero contestar eso.', delicada:true},
-    {texto:'Problemas con amigos?', respuesta:'Solo pequeñas discusiones, nada importante.', delicada:false}
-  ],
-  5: [
-    {texto:'Notas cambios en sus hábitos?', respuesta:'Sí, empezó a llegar tarde a clase y ausentarse a veces.', delicada:false},
-    {texto:'Últimos mensajes que recibiste de ella?', respuesta:'Solo mensajes de dudas académicas.', delicada:false},
-    {texto:'Alguien intentó intimidarla?', respuesta:'No quiero contestar eso.', delicada:true}
-  ],
-  6: [
-    {texto:'Sabías de secretos que guardara?', respuesta:'No quiero revelar eso.', delicada:true},
-    {texto:'Alguien le visitaba con frecuencia?', respuesta:'No, nadie en particular.', delicada:false},
-    {texto:'Qué opinas de Tomás?', respuesta:'Su hermano, muy protector y atento.', delicada:false}
-  ],
-  7: [
-    {texto:'Qué opinas de Mariana?', respuesta:'Su mejor amiga, bastante reservada.', delicada:false},
-    {texto:'Algo que te preocupara de su comportamiento?', respuesta:'Sí, parecía más nerviosa de lo habitual.', delicada:false},
-    {texto:'Algún secreto que quieras revelar?', respuesta:'No quiero revelar eso.', delicada:true}
-  ],
-  8: [
-    {texto:'Último contacto que tuviste con ella?', respuesta:'Hablamos de su proyecto final, todo normal.', delicada:false},
-    {texto:'Sabías de alguien que quisiera hacerle daño?', respuesta:'No quiero contestar eso.', delicada:true},
-    {texto:'Alguna situación extraña en el campus?', respuesta:'Vi un coche sospechoso pasando varias veces.', delicada:false}
-  ],
-  9: [
-    {texto:'Algo que no hemos preguntado?', respuesta:'Nada más que añadir, eso es todo.', delicada:false},
-    {texto:'Pensaste que algo malo le pasaría?', respuesta:'No quiero responder eso.', delicada:true},
-    {texto:'Última vez que la viste tranquila?', respuesta:'Un día antes de su desaparición, estaba normal.', delicada:false}
-  ],
-  10: [
-    {texto:'Algo más que quieras decir?', respuesta:'No, ya te conté todo lo que sé.', delicada:false},
-    {texto:'Algún detalle que pueda ayudar?', respuesta:'No quiero contestar eso.', delicada:true},
-    {texto:'Última interacción que recuerdes?', respuesta:'Hablamos brevemente en clase, todo normal.', delicada:false}
-  ]
-};
-
-function mostrarBotones() {
-  const cont = document.getElementById('botones');
-  cont.innerHTML = '';
-  preguntas[nivel].forEach((p, idx) => {
-    let textoBtn = p.texto;
-    if(estado==='indignado' && preguntasUsadas.includes(idx)) textoBtn += ' (Respuesta breve)';
-    cont.innerHTML += `<button class="btn-question" onclick="hacerPregunta(${idx})">${textoBtn}</button>`;
-  });
-}
-
-function hacerPregunta(idx) {
-  const p = preguntas[nivel][idx];
-  const info = document.getElementById('info');
-
-  if(p.delicada){
-    if(Math.random()<0.5){ 
-      estado='indignado'; 
-      info.innerHTML=`<p>Daniel se indigna y responde de manera breve o evasiva: "No quiero contestar eso".</p>`; 
-      preguntasUsadas.push(idx); 
-      mostrarBotones(); 
-      return;
-    }
-    else{
-      info.innerHTML=`<p>Daniel responde: "No quiero contestar eso".</p>`; 
-      mostrarBotones(); 
-      return;
-    }
-  }
-
-  let respuesta = p.respuesta;
-  if(estado==='indignado') respuesta='(Respuesta breve por indignación) ' + respuesta;
-  info.innerHTML=`<p>${respuesta}</p>`;
-  preguntasUsadas.push(idx);
-
-  if(nivel<10) nivel++;
-  mostrarBotones();
-}
-
-function reiniciar() { 
-  nivel=1; 
-  estado='normal'; 
-  preguntasUsadas=[]; 
-  document.getElementById('info').innerHTML='<p>Selecciona una pregunta para empezar el interrogatorio.</p>'; 
-  mostrarBotones(); 
-}
-
-mostrarBotones();<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Interrogatorio - Daniel Ríos</title>
-
+<title>Interrogatorio — Daniel Ríos</title>
 <style>
 body{
-  font-family:"Courier New", monospace;
+  font-family:Arial, sans-serif;
   background:#121212;
   color:#e0e0e0;
   margin:0;
 }
 header{
   background:#1e1e1e;
-  padding:20px;
+  padding:15px;
   text-align:center;
-  border-bottom:4px solid #444;
+  border-bottom:3px solid #444;
 }
 main{
-  max-width:900px;
+  max-width:800px;
   margin:20px auto;
   background:#1c1c1c;
   border:2px solid #444;
   padding:20px;
 }
-#info{
+#dialogo{
+  min-height:180px;
   background:#262626;
   border:1px solid #555;
   padding:15px;
-  min-height:140px;
-  margin-bottom:15px;
+  margin-bottom:20px;
 }
 .btn{
   background:#444;
   color:#fff;
-  padding:12px 18px;
   border:none;
+  padding:12px 18px;
   border-radius:4px;
   cursor:pointer;
-  margin:5px;
+  font-size:16px;
 }
 .btn:hover{
   background:#ffcc00;
@@ -195,111 +52,59 @@ main{
 <body>
 
 <header>
-<h1>Interrogatorio: Daniel Ríos</h1>
-<h2>Profesor universitario</h2>
+<h1>Interrogatorio</h1>
+<h3>Profesor Daniel Ríos</h3>
 </header>
 
 <main>
 
-<div id="info">
-<p>Selecciona una pregunta para comenzar el interrogatorio.</p>
+<div id="dialogo"></div>
+
+<div class="center">
+<button id="btnAvanzar" class="btn">Continuar</button>
 </div>
 
-<div id="botones"></div>
-
-<div id="final" class="center"></div>
+</main>
 
 <script>
-let nivel = 1;
+const dialogos = [
+  "Daniel parece cansado. Evita mirarte directamente.",
+  "— Lucía era una alumna brillante… demasiado observadora.",
+  "Juega con su pluma. Está nervioso.",
+  "— No suelo mezclarme en asuntos personales.",
+  "Suspira antes de continuar.",
+  "— Ella sabía que alguien la estaba observando.",
+  "Guarda silencio durante varios segundos.",
+  "— Me pidió que conservara algo por si pasaba lo peor.",
+  "Se levanta y abre su portafolio.",
+  "— Esto es suyo. Yo ya no debía tenerlo."
+];
 
-const preguntas = {
-  1:[
-    {t:"¿Desde cuándo conoce a Lucía?", r:"Desde hace dos semestres. Alumna destacada."},
-    {t:"¿Era participativa en clase?", r:"Mucho. Siempre observadora."},
-    {t:"¿Alguna falta disciplinaria?", r:"Nunca."}
-  ],
-  2:[
-    {t:"¿Mostraba estrés?", r:"Sí. Más que el promedio."},
-    {t:"¿Problemas académicos?", r:"No. Eran personales."},
-    {t:"¿La notó distraída?", r:"Constantemente."}
-  ],
-  3:[
-    {t:"¿Tomaba muchas notas?", r:"Demasiadas. Incluso fuera de contexto."},
-    {t:"¿Qué tipo de notas?", r:"Símbolos. Letras sueltas."},
-    {t:"¿Sobre la clase?", r:"No siempre."}
-  ],
-  4:[
-    {t:"¿Le preguntaba cosas extrañas?", r:"Sobre anonimato. Sobre desaparecer."},
-    {t:"¿Le pareció normal?", r:"No."},
-    {t:"¿Le dio importancia?", r:"En su momento, no."}
-  ],
-  5:[
-    {t:"¿Escribía en su cuaderno?", r:"A veces. En los márgenes."},
-    {t:"¿Sin permiso?", r:"Yo se lo permitía."},
-    {t:"¿Qué escribía ahí?", r:"Cosas que no entendía."}
-  ],
-  6:[
-    {t:"¿Recuerda números?", r:"Sí. Repetidos."},
-    {t:"¿Fechas?", r:"Demasiadas coincidencias."},
-    {t:"¿Palabras completas?", r:"No. Fragmentos."}
-  ],
-  7:[
-    {t:"¿Podrían ser códigos?", r:"Es posible."},
-    {t:"¿Los revisó?", r:"Nunca con atención."},
-    {t:"¿Por qué no?", r:"No pensé que fuera relevante."}
-  ],
-  8:[
-    {t:"¿Lucía temía algo?", r:"Eso parecía."},
-    {t:"¿A alguien?", r:"No lo dijo."},
-    {t:"¿Se sentía observada?", r:"Sí."}
-  ],
-  9:[
-    {t:"¿Tiene aún ese cuaderno?", r:"Sí."},
-    {t:"¿Sabe que puede ser importante?", r:"Ahora lo entiendo."},
-    {t:"¿Está dispuesto a entregarlo?", r:"Sí."}
-  ],
-  10:[
-    {t:"¿Nos permitirá verlo?", r:"No debería… pero sí."},
-    {t:"¿Está completo?", r:"Tal como ella lo dejó."},
-    {t:"¿Algo más que debamos saber?", r:"Lean con cuidado."}
-  ]
-};
+let nivel = 0;
+const dialogoDiv = document.getElementById("dialogo");
+const btn = document.getElementById("btnAvanzar");
 
-function mostrar(){
-  const cont = document.getElementById('botones');
-  cont.innerHTML = '';
-  preguntas[nivel].forEach((p,i)=>{
-    cont.innerHTML += `<button class="btn" onclick="preguntar(${i})">${p.t}</button>`;
-  });
-}
+dialogoDiv.innerText = dialogos[nivel];
 
-function preguntar(i){
-  document.getElementById('info').innerHTML = `<p>${preguntas[nivel][i].r}</p>`;
+btn.addEventListener("click", () => {
   nivel++;
-  if(nivel <= 10){
-    mostrar();
+
+  if (nivel < dialogos.length) {
+    dialogoDiv.innerText = dialogos[nivel];
   } else {
-    finalizar();
+    // 🔥 AQUÍ SE CREA EL BOTÓN FINAL (ANTES NO PASABA)
+    btn.remove();
+
+    dialogoDiv.innerHTML = `
+      <p><strong>Daniel desliza un cuaderno viejo sobre la mesa.</strong></p>
+      <p>— Lucía dijo que alguien sabría leerlo.</p>
+      <div class="center">
+        <a href="cuaderno-profesor.html" class="btn">📓 Abrir cuaderno</a>
+      </div>
+    `;
   }
-}
-
-function finalizar(){
-  document.getElementById('botones').innerHTML = '';
-  document.getElementById('info').innerHTML += `
-    <p><strong>Daniel guarda silencio unos segundos.</strong><br><br>
-    “Lucía escribía cosas que no parecían aleatorias.  
-    Si hay respuestas, están aquí.”</p>
-  `;
-  document.getElementById('final').innerHTML = `
-    <a class="btn" href="cuaderno-profesor.html">📓 Recibir cuaderno de clase</a>
-    <br><br>
-    <a class="btn" href="sala-interrogatorio.html">Volver a la sala</a>
-  `;
-}
-
-mostrar();
+});
 </script>
 
-</main>
 </body>
 </html>
