@@ -28,7 +28,6 @@ main {
 .desktop {
   display:flex;
   flex-wrap:wrap;
-  justify-content:flex-start;
   gap:20px;
 }
 .icon {
@@ -38,7 +37,6 @@ main {
   border:2px solid #444;
   border-radius:10px;
   text-align:center;
-  padding:10px;
   cursor:pointer;
   transition:0.3s;
   display:flex;
@@ -48,19 +46,20 @@ main {
   font-size:2em;
 }
 .icon:hover { background:#ffcc00; color:#000; }
-.icon div { font-size:0.9em; margin-top:8px; color:#e0e0e0; }
+.icon div { font-size:0.85em; margin-top:8px; }
 .input-section {
-  margin-top:20px;
+  margin-top:25px;
+  display:none;
 }
-input[type="text"], input[type="number"] {
+input {
   padding:8px;
-  width:200px;
+  width:220px;
   border-radius:5px;
   border:none;
   margin-right:10px;
 }
 button {
-  padding:8px 12px;
+  padding:8px 14px;
   border:none;
   border-radius:5px;
   background:#444;
@@ -69,13 +68,19 @@ button {
   transition:0.3s;
 }
 button:hover { background:#ffcc00; color:#000; }
-#info { margin-top:20px; padding:15px; background:#262626; border:1px solid #555; min-height:50px; }
+#info {
+  margin-top:20px;
+  padding:15px;
+  background:#262626;
+  border:1px solid #555;
+  min-height:60px;
+}
 </style>
 </head>
 <body>
 
 <header>
-<h1>💻 Computadora - Caso Lucía Herrera</h1>
+<h1>💻 Terminal de Investigación</h1>
 </header>
 
 <main>
@@ -83,28 +88,19 @@ button:hover { background:#ffcc00; color:#000; }
   <div class="icon" onclick="abrirFichas()">📁<div>Fichas</div></div>
   <div class="icon" onclick="solicitarCodigo('internet')">🌐<div>Internet</div></div>
   <div class="icon" onclick="solicitarCodigo('diario')">📓<div>Diario</div></div>
-  <div class="icon" onclick="solicitarCodigo('carpeta')">🗂️<div>Carpeta Secreta</div></div>
+  <div class="icon" onclick="solicitarCodigo('carpeta')">🗂️<div>Carpeta</div></div>
 </div>
 
-<div class="input-section" id="codigo-section" style="display:none;">
-  <input type="text" id="codigo-input" placeholder="Ingresa el código">
+<div class="input-section" id="codigo-section">
+  <input type="text" id="codigo-input" placeholder="Código de acceso">
   <button onclick="verificarCodigo()">Aceptar</button>
 </div>
 
-<div id="info"></div>
+<div id="info">Sistema en espera.</div>
 </main>
 
 <script>
 let accionActual = '';
-const codigos = {
-  internet: 'INTERNET123',
-  diario: 'DIARIO456',
-  carpeta: {
-    '1111': 'Final A: Información parcial',
-    '2222': 'Final B: Información completa',
-    '3333': 'Final C: Alerta activada'
-  }
-};
 
 function abrirFichas(){
   window.location.href = 'fichas.html';
@@ -113,32 +109,40 @@ function abrirFichas(){
 function solicitarCodigo(tipo){
   accionActual = tipo;
   document.getElementById('codigo-section').style.display = 'block';
-  document.getElementById('info').innerHTML = `Introduce el código para acceder a ${tipo}.`;
   document.getElementById('codigo-input').value = '';
+  const mensajes = {
+    internet: 'El acceso a la red está restringido.',
+    diario: 'Este archivo fue protegido por Lucía.',
+    carpeta: 'Carpeta cifrada. Autorización requerida.'
+  };
+  document.getElementById('info').innerHTML = mensajes[tipo];
 }
 
 function verificarCodigo(){
-  const codigo = document.getElementById('codigo-input').value.trim();
+  const codigo = document.getElementById('codigo-input').value.trim().toUpperCase();
   const info = document.getElementById('info');
 
   if(accionActual === 'internet'){
-    if(codigo === codigos.internet){
+    if(codigo === 'NOCHE'){
       window.location.href = 'internet.html';
     } else {
-      info.innerHTML = 'Código incorrecto para Internet.';
+      info.innerHTML = 'Acceso denegado. La red permanece en silencio.';
     }
-  } else if(accionActual === 'diario'){
-    if(codigo === codigos.diario){
+  }
+
+  if(accionActual === 'diario'){
+    if(codigo === 'CONFIA'){
       window.location.href = 'diario-lucia.html';
     } else {
-      info.innerHTML = 'Código incorrecto para Diario.';
+      info.innerHTML = 'El archivo no se abre. Falta confianza.';
     }
-  } else if(accionActual === 'carpeta'){
-    if(codigos.carpeta[codigo]){
-      info.innerHTML = `Código correcto: ${codigos.carpeta[codigo]}. <br>Puedes abrir la carpeta correspondiente.`;
-      // Aquí puedes redirigir o desbloquear contenido específico
+  }
+
+  if(accionActual === 'carpeta'){
+    if(codigo === 'EL VIGIA'){
+      window.location.href = 'carpeta-final.html';
     } else {
-      info.innerHTML = 'Código de carpeta incorrecto.';
+      info.innerHTML = 'La carpeta no responde. Alguien observa.';
     }
   }
 
