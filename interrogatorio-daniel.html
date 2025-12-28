@@ -139,7 +139,165 @@ function reiniciar() {
   mostrarBotones(); 
 }
 
-mostrarBotones();
+mostrarBotones();<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interrogatorio - Daniel Ríos</title>
+
+<style>
+body{
+  font-family:"Courier New", monospace;
+  background:#121212;
+  color:#e0e0e0;
+  margin:0;
+}
+header{
+  background:#1e1e1e;
+  padding:20px;
+  text-align:center;
+  border-bottom:4px solid #444;
+}
+main{
+  max-width:900px;
+  margin:20px auto;
+  background:#1c1c1c;
+  border:2px solid #444;
+  padding:20px;
+}
+#info{
+  background:#262626;
+  border:1px solid #555;
+  padding:15px;
+  min-height:140px;
+  margin-bottom:15px;
+}
+.btn{
+  background:#444;
+  color:#fff;
+  padding:12px 18px;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+  margin:5px;
+}
+.btn:hover{
+  background:#ffcc00;
+  color:#000;
+}
+.center{
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Interrogatorio: Daniel Ríos</h1>
+<h2>Profesor universitario</h2>
+</header>
+
+<main>
+
+<div id="info">
+<p>Selecciona una pregunta para comenzar el interrogatorio.</p>
+</div>
+
+<div id="botones"></div>
+
+<div id="final" class="center"></div>
+
+<script>
+let nivel = 1;
+
+const preguntas = {
+  1:[
+    {t:"¿Desde cuándo conoce a Lucía?", r:"Desde hace dos semestres. Alumna destacada."},
+    {t:"¿Era participativa en clase?", r:"Mucho. Siempre observadora."},
+    {t:"¿Alguna falta disciplinaria?", r:"Nunca."}
+  ],
+  2:[
+    {t:"¿Mostraba estrés?", r:"Sí. Más que el promedio."},
+    {t:"¿Problemas académicos?", r:"No. Eran personales."},
+    {t:"¿La notó distraída?", r:"Constantemente."}
+  ],
+  3:[
+    {t:"¿Tomaba muchas notas?", r:"Demasiadas. Incluso fuera de contexto."},
+    {t:"¿Qué tipo de notas?", r:"Símbolos. Letras sueltas."},
+    {t:"¿Sobre la clase?", r:"No siempre."}
+  ],
+  4:[
+    {t:"¿Le preguntaba cosas extrañas?", r:"Sobre anonimato. Sobre desaparecer."},
+    {t:"¿Le pareció normal?", r:"No."},
+    {t:"¿Le dio importancia?", r:"En su momento, no."}
+  ],
+  5:[
+    {t:"¿Escribía en su cuaderno?", r:"A veces. En los márgenes."},
+    {t:"¿Sin permiso?", r:"Yo se lo permitía."},
+    {t:"¿Qué escribía ahí?", r:"Cosas que no entendía."}
+  ],
+  6:[
+    {t:"¿Recuerda números?", r:"Sí. Repetidos."},
+    {t:"¿Fechas?", r:"Demasiadas coincidencias."},
+    {t:"¿Palabras completas?", r:"No. Fragmentos."}
+  ],
+  7:[
+    {t:"¿Podrían ser códigos?", r:"Es posible."},
+    {t:"¿Los revisó?", r:"Nunca con atención."},
+    {t:"¿Por qué no?", r:"No pensé que fuera relevante."}
+  ],
+  8:[
+    {t:"¿Lucía temía algo?", r:"Eso parecía."},
+    {t:"¿A alguien?", r:"No lo dijo."},
+    {t:"¿Se sentía observada?", r:"Sí."}
+  ],
+  9:[
+    {t:"¿Tiene aún ese cuaderno?", r:"Sí."},
+    {t:"¿Sabe que puede ser importante?", r:"Ahora lo entiendo."},
+    {t:"¿Está dispuesto a entregarlo?", r:"Sí."}
+  ],
+  10:[
+    {t:"¿Nos permitirá verlo?", r:"No debería… pero sí."},
+    {t:"¿Está completo?", r:"Tal como ella lo dejó."},
+    {t:"¿Algo más que debamos saber?", r:"Lean con cuidado."}
+  ]
+};
+
+function mostrar(){
+  const cont = document.getElementById('botones');
+  cont.innerHTML = '';
+  preguntas[nivel].forEach((p,i)=>{
+    cont.innerHTML += `<button class="btn" onclick="preguntar(${i})">${p.t}</button>`;
+  });
+}
+
+function preguntar(i){
+  document.getElementById('info').innerHTML = `<p>${preguntas[nivel][i].r}</p>`;
+  nivel++;
+  if(nivel <= 10){
+    mostrar();
+  } else {
+    finalizar();
+  }
+}
+
+function finalizar(){
+  document.getElementById('botones').innerHTML = '';
+  document.getElementById('info').innerHTML += `
+    <p><strong>Daniel guarda silencio unos segundos.</strong><br><br>
+    “Lucía escribía cosas que no parecían aleatorias.  
+    Si hay respuestas, están aquí.”</p>
+  `;
+  document.getElementById('final').innerHTML = `
+    <a class="btn" href="cuaderno-profesor.html">📓 Recibir cuaderno de clase</a>
+    <br><br>
+    <a class="btn" href="sala-interrogatorio.html">Volver a la sala</a>
+  `;
+}
+
+mostrar();
 </script>
 
 </main>
