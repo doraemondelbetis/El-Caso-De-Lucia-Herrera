@@ -4,142 +4,186 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Interrogatorio - Álvaro Montes</title>
+
 <style>
-body { font-family:"Courier New",Courier,monospace; background:#121212; color:#e0e0e0; margin:0; padding:0;}
-header { background:#1e1e1e; color:#fff; padding:20px; text-align:center; border-bottom:4px solid #444; }
+body {
+  font-family:"Courier New", Courier, monospace;
+  background:#121212;
+  color:#e0e0e0;
+  margin:0;
+  padding:0;
+}
+header {
+  background:#1e1e1e;
+  color:#fff;
+  padding:20px;
+  text-align:center;
+  border-bottom:4px solid #444;
+}
 h1 { margin:0; font-size:2.5em; }
 h2 { margin:5px 0 20px 0; font-size:1.5em; color:#ccc; font-weight:normal; }
-main { max-width:900px; margin:20px auto; padding:20px; background:#1c1c1c; border:2px solid #444; box-shadow:3px 3px 10px rgba(0,0,0,0.5); }
-.button-container { text-align:center; margin-top:20px; }
-.btn, .btn-question { background:#444; color:#fff; padding:12px 20px; border:none; border-radius:4px; cursor:pointer; margin:5px 5px 0 0; transition:0.3s; font-size:16px; }
-.btn:hover, .btn-question:hover { background:#ffcc00; color:#000; }
-.info-box { margin-top:20px; padding:15px; background:#262626; border:1px solid #555; min-height:150px; }
-@media(max-width:600px){ .btn, .btn-question { width:100%; font-size:18px; margin-top:12px;} }
+
+main {
+  max-width:900px;
+  margin:20px auto;
+  padding:20px;
+  background:#1c1c1c;
+  border:2px solid #444;
+  box-shadow:3px 3px 10px rgba(0,0,0,0.5);
+}
+
+.info-box {
+  margin-top:20px;
+  padding:15px;
+  background:#262626;
+  border:1px solid #555;
+  min-height:160px;
+}
+
+.button-container {
+  text-align:center;
+  margin-top:20px;
+}
+
+.btn, .btn-question {
+  background:#444;
+  color:#fff;
+  padding:12px 20px;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+  margin:5px;
+  transition:0.3s;
+  font-size:16px;
+}
+.btn:hover, .btn-question:hover {
+  background:#ffcc00;
+  color:#000;
+}
+
+@media(max-width:600px){
+  .btn, .btn-question {
+    width:100%;
+    font-size:18px;
+    margin-top:12px;
+  }
+}
 </style>
 </head>
+
 <body>
 
 <header>
 <h1>Interrogatorio: Álvaro Montes</h1>
-<h2>Interactúa y selecciona tus preguntas</h2>
+<h2>Exnovio de Lucía Herrera</h2>
 </header>
 
 <main>
+
 <div class="info-box" id="info">
-<p>Selecciona una pregunta para empezar el interrogatorio.</p>
+<p>Selecciona una pregunta para comenzar el interrogatorio.</p>
 </div>
 
 <div class="button-container" id="botones"></div>
 
-<div class="button-container" id="final"></div>
-
 <div class="button-container">
-<button class="btn" onclick="reiniciar()">Reiniciar Interrogatorio</button>
-<a class="btn" href="sala-interrogatorio.html">Volver a la Sala de Interrogatorio</a>
+<button class="btn" onclick="reiniciar()">Reiniciar interrogatorio</button>
+<a class="btn" href="sala-interrogatorio.html">Volver a la sala</a>
 </div>
+
+</main>
 
 <script>
 let nivel = 1;
-let preguntasUsadas = [];
 
 const preguntas = {
-1: [
-  {texto:'¿Cómo describirías tu relación con Lucía?', respuesta:'Fue importante. No terminó mal… solo se fue apagando.'},
-  {texto:'¿Seguían en contacto últimamente?', respuesta:'Sí, hablábamos. No como antes, pero hablábamos.'},
-  {texto:'¿Cómo estaba ella en esos días?', respuesta:'Más callada. Pensativa.'}
-],
-2: [
-  {texto:'¿Discutieron antes de desaparecer?', respuesta:'Tuvimos una charla incómoda. Nada violento.'},
-  {texto:'¿Te parecía preocupada por algo?', respuesta:'Sí, pero no quiso decirme qué.'},
-  {texto:'¿Te pidió ayuda?', respuesta:'No directamente.'}
-],
-3: [
-  {texto:'¿Cuándo fue la última vez que la viste?', respuesta:'Unos días antes. Nos cruzamos poco.'},
-  {texto:'¿Dónde fue ese encuentro?', respuesta:'Cerca de su edificio.'},
-  {texto:'¿Fue una despedida?', respuesta:'No lo sabíamos.'}
-],
-4: [
-  {texto:'¿Te dijo algo extraño ese día?', respuesta:'Me dijo que estaba ordenando su vida.'},
-  {texto:'¿Parecía nerviosa?', respuesta:'Más distraída que nerviosa.'},
-  {texto:'¿Llevaba algo consigo?', respuesta:'Una carpeta. Papeles.'}
-],
-5: [
-  {texto:'¿Papeles de qué tipo?', respuesta:'Apuntes. Hojas sueltas.'},
-  {texto:'¿Eran importantes?', respuesta:'Para ella sí.'},
-  {texto:'¿Los revisaste?', respuesta:'No todos.'}
-],
-6: [
-  {texto:'¿Qué pasó con esas hojas?', respuesta:'Se le cayeron.'},
-  {texto:'¿Te diste cuenta en el momento?', respuesta:'No. Después.'},
-  {texto:'¿Las recogiste?', respuesta:'Sí.'}
-],
-7: [
-  {texto:'¿Por qué no las entregaste?', respuesta:'No supe qué hacer con ellas.'},
-  {texto:'¿Las guardaste?', respuesta:'Sí.'},
-  {texto:'¿Las leíste?', respuesta:'Algunas no las entendí.'}
-],
-8: [
-  {texto:'¿Había algo raro en esas hojas?', respuesta:'Había cosas personales.'},
-  {texto:'¿Algún mensaje?', respuesta:'Frases. Fechas.'},
-  {texto:'¿Algo cifrado?', respuesta:'Eso creo.'}
-],
-9: [
-  {texto:'¿Por qué decides hablar ahora?', respuesta:'No quiero seguir atado a esto.'},
-  {texto:'¿Quieres seguir adelante?', respuesta:'Sí.'},
-  {texto:'¿Estás seguro?', respuesta:'Sí.'}
-],
-10: [
-  {texto:'¿Hay algo más que debamos saber?', respuesta:'Las hojas deberían estar con ustedes.'},
-  {texto:'¿Estás dispuesto a entregarlas?', respuesta:'Sí.'},
-  {texto:'¿Por qué?', respuesta:'Porque ella quería que alguien las entendiera.'}
-]
+  1: [
+    {t:'¿Cuándo fue la última vez que viste a Lucía?', r:'Unos días antes de que desapareciera. Fue breve.'},
+    {t:'¿Seguían en contacto?', r:'Sí… aunque ya no como antes.'},
+    {t:'¿Cómo terminó su relación?', r:'Mal. Distante. Sin cerrar cosas.'}
+  ],
+  2: [
+    {t:'¿Discutieron esa última vez?', r:'Un poco. Nada grave… creo.'},
+    {t:'¿La notaste nerviosa?', r:'Sí. Más de lo normal.'},
+    {t:'¿Te dijo que alguien la seguía?', r:'No directamente.'}
+  ],
+  3: [
+    {t:'¿Lucía llevaba algo consigo ese día?', r:'Una carpeta… o unas hojas sueltas.'},
+    {t:'¿Recuerdas de qué eran?', r:'Parecían apuntes. No lo sé.'},
+    {t:'¿Las volvió a mencionar?', r:'No.'}
+  ],
+  4: [
+    {t:'¿Qué pasó con esas hojas?', r:'Se le cayeron cuando se fue.'},
+    {t:'¿Intentaste devolvérselas?', r:'Pensé hacerlo… luego no.'},
+    {t:'¿Por qué no lo hiciste?', r:'No sé.'}
+  ],
+  5: [
+    {t:'¿Las conservaste?', r:'Sí.'},
+    {t:'¿Por qué?', r:'Porque… eran de ella.'},
+    {t:'¿Las leíste?', r:'Solo partes.'}
+  ],
+  6: [
+    {t:'¿Qué decían?', r:'Cosas raras. Notas, fechas, símbolos.'},
+    {t:'¿Algo personal?', r:'Sí. Mucho.'},
+    {t:'¿Algo peligroso?', r:'No lo entendí.'}
+  ],
+  7: [
+    {t:'¿Crees que esas hojas son importantes?', r:'Ahora sí.'},
+    {t:'¿Por qué no las entregaste antes?', r:'No estaba listo.'},
+    {t:'¿Qué te hizo cambiar de opinión?', r:'Quiero seguir con mi vida.'}
+  ],
+  8: [
+    {t:'¿Sigues teniendo las hojas?', r:'Sí.'},
+    {t:'¿Están completas?', r:'No. Algunas faltan.'},
+    {t:'¿Sabes dónde están las demás?', r:'No.'}
+  ],
+  9: [
+    {t:'¿Lucía confiaba en ti?', r:'Más de lo que yo merecía.'},
+    {t:'¿Escondía cosas?', r:'Sí.'},
+    {t:'¿Crees que esto se relaciona con su desaparición?', r:'Puede ser.'}
+  ],
+  10: [
+    {t:'¿Nos darás esas hojas?', r:'Sí. Ya no quiero cargarlas.'},
+    {t:'¿Por qué ahora?', r:'Porque alguien debe leerlas.'},
+    {t:'¿Algo más que debamos saber?', r:'Lean con cuidado.'}
+  ]
 };
 
-function mostrarBotones() {
+function mostrarBotones(){
   const cont = document.getElementById('botones');
   cont.innerHTML = '';
-  preguntas[nivel].forEach((p, idx) => {
-    cont.innerHTML += `<button class="btn-question" onclick="hacerPregunta(${idx})">${p.texto}</button>`;
+
+  preguntas[nivel].forEach((p, i)=>{
+    cont.innerHTML += `<button class="btn-question" onclick="preguntar(${i})">${p.t}</button>`;
   });
 }
 
-function hacerPregunta(idx) {
-  const info = document.getElementById('info');
-  info.innerHTML = `<p>${preguntas[nivel][idx].respuesta}</p>`;
+function preguntar(i){
+  document.getElementById('info').innerHTML = `<p>${preguntas[nivel][i].r}</p>`;
 
   if(nivel < 10){
     nivel++;
     mostrarBotones();
   } else {
-    finalizar();
+    document.getElementById('botones').innerHTML = `
+      <button class="btn" onclick="tomarHojas()">📄 Tomar las hojas de Lucía</button>
+    `;
   }
 }
 
-function finalizar(){
-  document.getElementById('botones').innerHTML = '';
-  document.getElementById('final').innerHTML = `
-    <p>Álvaro guarda silencio unos segundos.</p>
-    <button class="btn" onclick="tomarHojas()">📄 Tomar las hojas de Lucía</button>
-  `;
-}
-
 function tomarHojas(){
-  localStorage.setItem('hojasLucia','true');
-  alert('Has obtenido las hojas de Lucía.');
-  // luego podrás redirigir a hojas-lucia.html
+  localStorage.setItem('hojasLucia', 'true');
+  window.location.href = 'hojas-lucia.html';
 }
 
 function reiniciar(){
   nivel = 1;
-  preguntasUsadas = [];
-  document.getElementById('info').innerHTML='<p>Selecciona una pregunta para empezar el interrogatorio.</p>';
-  document.getElementById('final').innerHTML='';
+  document.getElementById('info').innerHTML = '<p>Selecciona una pregunta para comenzar el interrogatorio.</p>';
   mostrarBotones();
 }
 
 mostrarBotones();
 </script>
 
-</main>
 </body>
 </html>
