@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carpeta Final - Caso Lucía Herrera</title>
+<style>
+body {
+  font-family:"Courier New",Courier,monospace;
+  background:#121212;
+  color:#e0e0e0;
+  margin:0;
+  padding:0;
+}
+header {
+  background:#1e1e1e;
+  color:#fff;
+  padding:20px;
+  text-align:center;
+  border-bottom:4px solid #444;
+}
+h1 { margin:0; font-size:2em; }
+main {
+  max-width:900px;
+  margin:20px auto;
+  padding:20px;
+}
+.button-container {
+  text-align:center;
+  margin-top:20px;
+}
+.btn-choice {
+  background:#444;
+  color:#fff;
+  padding:12px 20px;
+  border:none;
+  border-radius:4px;
+  cursor:pointer;
+  margin:5px;
+  font-size:16px;
+  transition:0.3s;
+}
+.btn-choice:hover { background:#ffcc00; color:#000; }
+.info-box {
+  margin-top:20px;
+  padding:15px;
+  background:#262626;
+  border:1px solid #555;
+  min-height:150px;
+  white-space:pre-line;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Carpeta Final - ¿Quién es el culpable?</h1>
+<h2>Selecciona tu sospechoso</h2>
+</header>
+
+<main>
+<div class="button-container">
+  <button class="btn-choice" onclick="seleccionar('Mariana')">Mariana</button>
+  <button class="btn-choice" onclick="seleccionar('Álvaro')">Álvaro</button>
+  <button class="btn-choice" onclick="seleccionar('Daniel')">Daniel</button>
+  <button class="btn-choice" onclick="seleccionar('Tomás')">Tomás</button>
+</div>
+
+<div class="info-box" id="info">
+<p>Elige el sospechoso para conocer la verdad.</p>
+</div>
+
+<div class="button-container" style="margin-top:30px;">
+  <a class="btn-choice" href="index.html">Volver a la computadora</a>
+</div>
+
+<script>
+function seleccionar(personaje){
+  const info = document.getElementById('info');
+  let mensaje = '';
+
+  if(personaje === 'Mariana'){
+    mensaje = `Has elegido correctamente. Mariana era quien acosaba a Lucía y planeó su desaparición porque estaba celosa de que Lucía no le diera el número de su exnovio. Gracias a tu decisión de arrestarla, Mariana es llevada a la cárcel y no puede seguir haciendo daño.
+
+Lucía finalmente puede respirar tranquila. Con la ayuda de su hermano (EL VIGIA) pudo mantenerse a salvo mientras todo esto se esclarecía. Este caso demuestra que a veces la persona más cercana puede tener las intenciones más oscuras, pero con atención y paciencia la verdad sale a la luz.`;
+  } else {
+    mensaje = `Has elegido incorrectamente. El sospechoso elegido no era el verdadero culpable.
+
+Al arrestar a ${personaje}, Mariana aprovechó la situación y logró encontrar a Lucía. Debido a la preparación de Mariana y su planeación meticulosa, encontró a Lucía y la asesinó. La investigación termina en tragedia, mostrando que un error puede costar vidas.
+
+Recuerda: Mariana era quien acosaba a Lucía y planeó todo por celos y obsesión. Solo arrestando a la verdadera culpable se pudo salvar a Lucía.`;
+  }
+
+  info.innerText = mensaje;
+}
+</script>
+
+</main>
+</body>
+</html>
